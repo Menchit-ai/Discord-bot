@@ -16,23 +16,39 @@ bot = commands.Bot(command_prefix='|')
 trans = {'p':'pilote', 'a':'astrophysicien','i':'ingenieur','x':'xenobiologiste'}
 
 
+async def join(ctx):
+    channel = ctx.author.voice.channel
+    return await channel.connect()
+
 async def play(ctx,path):
 
     voice_channel = ctx.author.voice
     if voice_channel is None: await ctx.send("Vous n'êtes pas dans un channel audio."); return
-    voice_channel = voice_channel.channel
+    vc = None
 
-    try:
-        vc = await voice_channel.connect()
-        pickle.dump(vc, open('vc.VoiceChannel','wb'))
-    except:
-        vc = pickle.load(open('vc.VoiceChannel','rb'))
+
+    if (ctx.me.voice is None): 
+        vc = await ctx.author.voice.channel.connect()
+        print('if')
+    elif ctx.author.voice.channel != ctx.me.voice.channel:
+        print('elif')
+        await ctx.voice_client.disconnect()
+        vc = await ctx.author.voice.channel.connect()
+    else:
+        vc = ctx.voice_client    
 
     vc.play(discord.FFmpegPCMAudio(path), after=lambda e: print('done', e))
     vc.is_playing()
 
 
 # toutes les commandes disponibles avec le bot
+
+
+@bot.command(name='show', aliases=['s'], help='Debugger.')
+async def show(ctx):
+    print(ctx.me)
+    print(ctx.me.voice.channel)
+
 
 @bot.command(name='roll', aliases=['r'], help='Make a test under a score for a specified character with an optionnal modifier.')
 async def lilroll(ctx, character: str, test: str, mod: int=0):
@@ -87,17 +103,13 @@ async def listCharacter(ctx):
 
 @bot.command(name='shutdown', aliases=['sd','quit'], help='Kill the bot.')
 async def shutdown(ctx):
-    vc = None
+    global vc
     try:
-        pickle.load(open('vc.VoiceChannel','rb'))
-    except:
-        pass
-    await ctx.send("Shutdown.")
-    try:
-        await vc.disconnect()
+        await ctx.voice_client.disconnect()
     except:
         pass
     await client.close()
+    ctx.send("Shutdown")
     print("Bot closed")
     exit(0)
 
