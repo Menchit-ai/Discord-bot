@@ -21,7 +21,7 @@ if not discord.opus.is_loaded():
     # you should replace this with the location the
     # opus library is located in and with the proper filename.
     # note that on windows this DLL is automatically provided for you
-    discord.opus.load_opus('libopus0')
+    discord.opus.load_opus('opus')
 
 
 async def join(ctx):
