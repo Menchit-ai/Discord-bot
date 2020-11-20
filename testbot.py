@@ -3,7 +3,6 @@ import os
 import random
 import json
 from spellchecker import SpellChecker
-import pickle
 
 import discord
 from discord.ext import commands
@@ -29,9 +28,7 @@ async def play(ctx,path):
 
     if (ctx.me.voice is None): 
         vc = await ctx.author.voice.channel.connect()
-        print('if')
     elif ctx.author.voice.channel != ctx.me.voice.channel:
-        print('elif')
         await ctx.voice_client.disconnect()
         vc = await ctx.author.voice.channel.connect()
     else:
