@@ -10,6 +10,7 @@ chardet==3.0.4
 colorama==0.4.4
 decorator==4.4.2
 defusedxml==0.6.0
+discord
 docutils==0.16
 entrypoints==0.3
 idna==2.10
