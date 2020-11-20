@@ -3,6 +3,7 @@ import os
 import random
 import json
 from spellchecker import SpellChecker
+import pickle
 
 import discord
 from discord.ext import commands
@@ -14,7 +15,6 @@ client = discord.Client()
 bot = commands.Bot(command_prefix='|')
 trans = {'p':'pilote', 'a':'astrophysicien','i':'ingenieur','x':'xenobiologiste'}
 
-global vc
 
 async def play(ctx,path):
     global vc
@@ -25,8 +25,9 @@ async def play(ctx,path):
 
     try:
         vc = await voice_channel.connect()
+        pickle.dump(vc, open('vc.VoiceChannel','wb'))
     except:
-        pass
+        vc = pickle.load(open('vc.VoiceChannel','rb'))
 
     vc.play(discord.FFmpegPCMAudio(path), after=lambda e: print('done', e))
     vc.is_playing()
@@ -87,7 +88,11 @@ async def listCharacter(ctx):
 
 @bot.command(name='shutdown', aliases=['sd','quit'], help='Kill the bot.')
 async def shutdown(ctx):
-    global vc
+    vc = None
+    try:
+        pickle.load(open('vc.VoiceChannel','rb'))
+    except:
+        pass
     await ctx.send("Shutdown.")
     try:
         await vc.disconnect()
@@ -109,6 +114,6 @@ async def on_command_error(ctx, error):
     elif isinstance(error,commands.errors.ClientException):
         pass
     else:
-        print(error)
+        await ctx.send(error)
 
 bot.run(TOKEN)
