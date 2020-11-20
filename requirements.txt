@@ -14,6 +14,7 @@ docutils==0.16
 entrypoints==0.3
 idna==2.10
 importlib-metadata==2.0.0
+indexer
 ipykernel==5.3.4
 ipython
 ipython-genutils==0.2.0
