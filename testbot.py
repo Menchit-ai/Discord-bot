@@ -17,7 +17,6 @@ trans = {'p':'pilote', 'a':'astrophysicien','i':'ingenieur','x':'xenobiologiste'
 
 
 async def play(ctx,path):
-    global vc
 
     voice_channel = ctx.author.voice
     if voice_channel is None: await ctx.send("Vous n'êtes pas dans un channel audio."); return
