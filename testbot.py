@@ -13,7 +13,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 client = discord.Client()
 bot = commands.Bot(command_prefix='|')
 trans = {'p':'pilote', 'a':'astrophysicien','i':'ingenieur','x':'xenobiologiste'}
-
+discord.opus.load_opus()
 
 async def join(ctx):
     channel = ctx.author.voice.channel
