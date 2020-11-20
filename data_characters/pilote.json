@@ -1,0 +1,23 @@
+{
+    "adaptation" : 60,
+    "astrophysique" : 40,
+    "mathematique" : 40,
+    "biologie" : 60,
+    "geologie" : 60,
+    "bricoler" : 50,
+    "bidouiller" : 50,
+    "distance" : 60,
+    "cac" : 60,
+    "etrange" : 30,
+    "convaincre" : 50,
+    "athletisme" : 70,
+    "0g" : 80,
+    "discretion" : 60,
+    "calme" : 50,
+    "observer" : 50,
+    "pilotage" : 80,
+    "programmation" : 25,
+    "reflexes" : 75,
+    "soigner" : 60,
+    "survie" : 40
+}
