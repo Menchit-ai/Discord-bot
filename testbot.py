@@ -15,20 +15,14 @@ bot = commands.Bot(command_prefix='|')
 trans = {'p':'pilote', 'a':'astrophysicien','i':'ingenieur','x':'xenobiologiste'}
 
 
-import ctypes
-import ctypes.util
- 
-print("ctypes - Find opus:")
-a = ctypes.util.find_library('opus')
-print(a)
- 
-print("Discord - Load Opus:")
-b = discord.opus.load_opus(a)
-print(b)
- 
-print("Discord - Is loaded:")
-c = discord.opus.is_loaded()
-print(c)
+if not discord.opus.is_loaded():
+    # the 'opus' library here is opus.dll on windows
+    # or libopus.so on linux in the current directory
+    # you should replace this with the location the
+    # opus library is located in and with the proper filename.
+    # note that on windows this DLL is automatically provided for you
+    discord.opus.load_opus('libopus0')
+
 
 async def join(ctx):
     channel = ctx.author.voice.channel
