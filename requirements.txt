@@ -14,7 +14,6 @@ docutils==0.16
 entrypoints==0.3
 idna==2.10
 importlib-metadata==2.0.0
-indexer
 ipykernel==5.3.4
 ipython
 ipython-genutils==0.2.0
@@ -61,7 +60,6 @@ Send2Trash==1.5.0
 six==1.15.0
 sounddevice==0.3.15
 soupsieve==2.0
-spellchecker
 terminado==0.9.1
 testpath==0.4.4
 tornado==6.1
