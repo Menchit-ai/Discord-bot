@@ -34,7 +34,7 @@ async def play(ctx,path):
     else:
         vc = ctx.voice_client    
 
-    vc.play(discord.FFmpegPCMAudio(path), after=lambda e: print('done', e))
+    vc.play(discord.FFmpegPCMAudio(path))
     vc.is_playing()
 
 
@@ -49,6 +49,8 @@ async def show(ctx):
 
 @bot.command(name='roll', aliases=['r'], help='Make a test under a score for a specified character with an optionnal modifier.')
 async def lilroll(ctx, character: str, test: str, mod: int=0):
+    # bug boucle avec modificateur négatif
+    # bug faire toLoweCase avant processing
     spell = SpellChecker(language=None)
 
     roll = random.randint(1,100)
