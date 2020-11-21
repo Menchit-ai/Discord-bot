@@ -11,7 +11,7 @@ from discord.ext import commands
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 client = discord.Client()
-bot = commands.Bot(command_prefix='|')
+bot = commands.Bot(command_prefix='/')
 trans = {'p':'pilote', 'a':'astrophysicien','i':'ingenieur','x':'xenobiologiste'}
 
 
@@ -110,9 +110,24 @@ async def shutdown(ctx):
     print("Bot closed")
     exit(0)
 
+@bot.command(name='dice', aliases=['d'], help='Rolling dices [n°dices]d[n°faces]')
+async def dice(ctx,dice:str):
+    dice = dice.lower()
+    dices, faces = map(int,dice.split('d'))
+
+    li = []
+    for i in range(dices):
+        li.append(random.randint(1,faces))
+    li = list(map(int,li))
+
+    result = str(sum(li)) + '\n' + 'Details : ' + dice + " " + str(li)
+    await ctx.send(result)
+
+
 @bot.event
 async def on_ready():
     print('Connected to Discord!')
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,name='/help'))
 
 # gestion de toutes les erreurs
 @bot.event
@@ -122,6 +137,7 @@ async def on_command_error(ctx, error):
     elif isinstance(error,commands.errors.ClientException):
         pass
     else:
+        print(error)
         await ctx.send(error)
 
 bot.run(TOKEN)
