@@ -20,22 +20,24 @@ async def join(ctx):
     return await channel.connect()
 
 async def play(ctx,path):
+    try:
+        voice_channel = ctx.author.voice
+        if voice_channel is None: await ctx.send("Vous n'êtes pas dans un channel audio."); return
+        vc = None
 
-    voice_channel = ctx.author.voice
-    if voice_channel is None: await ctx.send("Vous n'êtes pas dans un channel audio."); return
-    vc = None
 
+        if (ctx.me.voice is None): 
+            vc = await ctx.author.voice.channel.connect()
+        elif ctx.author.voice.channel != ctx.me.voice.channel:
+            await ctx.voice_client.disconnect()
+            vc = await ctx.author.voice.channel.connect()
+        else:
+            vc = ctx.voice_client    
 
-    if (ctx.me.voice is None): 
-        vc = await ctx.author.voice.channel.connect()
-    elif ctx.author.voice.channel != ctx.me.voice.channel:
-        await ctx.voice_client.disconnect()
-        vc = await ctx.author.voice.channel.connect()
-    else:
-        vc = ctx.voice_client    
-
-    vc.play(discord.FFmpegPCMAudio(path))
-    vc.is_playing()
+        vc.play(discord.FFmpegPCMAudio(path))
+        vc.is_playing()
+    except:
+        pass
 
 
 # toutes les commandes disponibles avec le bot
