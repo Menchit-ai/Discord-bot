@@ -12,7 +12,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 client = discord.Client()
 bot = commands.Bot(command_prefix='/')
-trans = {'p':'pilote', 'a':'astrophysicien','i':'ingenieur','x':'xenobiologiste'}
+trans = {'p':'pilote', 'a':'astrophysicien','i':'ingenieur','x':'xenobiologiste','l':'linguiste'}
 
 
 async def join(ctx):
