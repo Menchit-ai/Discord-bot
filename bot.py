@@ -50,9 +50,9 @@ async def show(ctx):
 @bot.command(name='roll', aliases=['r'], help='Make a test under a score for a specified character with an optionnal modifier.')
 async def lilroll(ctx, character: str, test: str, mod: int=0):
     # bug boucle avec modificateur négatif
-    # bug faire toLoweCase avant processing
     spell = SpellChecker(language=None)
-
+    character = character.lower()
+    test = test.lower()
     roll = random.randint(1,100)
     if roll <= 10: await play(ctx,'./data_sound/victory.mp3')
     elif roll >= 90 : await play(ctx,'./data_sound/fail.mp3')
@@ -60,6 +60,7 @@ async def lilroll(ctx, character: str, test: str, mod: int=0):
     if len(character) == 1 : character = trans[character]
     path = './data_characters/' + character + '.json'
     result = character + ' rolling for '
+
     with open(path,'r') as json_file:
         data = json.load(json_file)
         keys = data.keys()
@@ -67,7 +68,7 @@ async def lilroll(ctx, character: str, test: str, mod: int=0):
         test = spell.correction(test)
         result = result + test + ' \n'
         if not test in keys: await ctx.send("La caractéristique n'est pas reconnue."); return
-        result = result + "Roll : " + str(roll) + "/" + str(data[test]-mod) + ', '
+        result = result + "Roll : " + str(roll) + "/" + str(data[test]+mod) + ', '
         if roll <= 10:
             result = result + "SUCCES CRITIQUE !!!"
         elif roll >= 90:
