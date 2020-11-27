@@ -89,6 +89,9 @@ async def lilroll(ctx, character: str):
         data = json.load(json_file)
         result = "\n".join(data.keys())
     await ctx.send(result)
+    # l'ajout de réaction ne fonctionne pas pour le moment
+    message = ctx.message
+    await message.add_reaction('👍')
 
 @bot.command(name='characters', help='List all characters available.')
 async def listCharacter(ctx):
