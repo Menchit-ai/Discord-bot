@@ -18,9 +18,11 @@ bot = commands.Bot(command_prefix='/')
 
 ######  CHEMIN DE BASE  #########
 path_data     = "./data/"
-path_sys_json = "./data/system.json"
-path_sys_txt  = "./data/system.txt"
 path_sound    = "./data/data_sound/"
+path_sys      = "./data/data_sys/"
+path_sys_json = path_sys + "system.json"
+path_sys_txt  = path_sys + "system.txt"
+
 #################################
 
 
@@ -75,7 +77,15 @@ async def change_system(ctx, newstate:str, option:str=None):
         with open(path_sys_txt,'a') as filesys:
             w = newstate+'\n'
             filesys.write(w)
-            await ctx.send(newstate + " a bien été ajouté aux systèmes jouables !")
+            
+        try:
+            path = path_sys + newstate
+            os.mkdir(path)
+        except:
+            await ctx.send("Le dossier n'a pas pu être créé.")
+
+        await ctx.send(newstate + " a bien été ajouté aux systèmes jouables !")
+        return
 
     if option is "d":
         with open(path_sys_txt,'w') as filesys:
@@ -99,8 +109,16 @@ async def change_system(ctx, newstate:str, option:str=None):
             data.pop(key)
         with open(path_sys_json,'w') as json_file:
             json.dump(data,json_file)
+
+        try:
+            path = path_sys + newstate
+            shutil.rmtree(path)
+        except:
+            await ctx.send("Le dossier n'a pas pu être supprimé.")
+
         await ctx.send(newstate + " a bien été supprimé de la liste.")
         return
+
     if not (newstate in sys) : await ctx.send("Ce système n'est pas disponible pour le moment."); return
     data = {}
     with open(path_sys_json,'r') as json_file:
@@ -116,20 +134,17 @@ async def change_system(ctx, newstate:str, option:str=None):
 
 @bot.command(name='info', aliases=['i'], help='Informations générales.')
 async def show(ctx):
-    await ctx.send(ctx.author)
-    await ctx.send(ctx.guild)
+    user = ctx.author
+    guild = ctx.guild
+    curr_sys = None
     with open(path_sys_json,'r') as json_file:
         data = json.load(json_file)
-        sys = 'None'
-        try : sys = data[ctx.guild.name]
+        try : curr_sys = data[ctx.guild.name]
         except : pass
-        await ctx.send(sys)
-    await ctx.send("Tous les systèmes disponibles :")
     sys = None
     with open(path_sys_txt,'r') as f:
         sys = [i.strip() for i in f.readlines()]
-    for i in sys:
-        await ctx.send(i)
+    sys = " ,".join(sys)
 
 
 
@@ -196,6 +211,7 @@ async def shutdown(ctx):
         pass
     await client.close()
     await ctx.send("Shutdown")
+    await bot.change_presence(status=discord.Status.offline)
     print("Bot closed")
     exit(0)
 
