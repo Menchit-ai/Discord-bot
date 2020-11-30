@@ -54,7 +54,27 @@ def get_sys(ctx):
     with open(path_sys_json,'r') as json_file:
         data = json.load(json_file)
         try : return data[guild]
-        except : return None
+        except : return "None"
+
+def get_carac(ctx):
+    sys = get_sys(ctx)
+    data = []
+    with open(path_sys + sys + '/' + sys + '.txt', 'r') as _file: data = _file.read().split('|')
+    return data
+
+def get_character(ctx):
+    sys = get_sys(ctx)
+    user = ctx.author.name
+    path = path_sys + sys+'/' + 'character.json'
+    data = {}
+    try:
+        with open(path,'r') as json_file : data = json.load(json_file)
+    except : data = None
+    c = "None"
+    try : c = data[user]
+    except : pass
+    return c
+
 
 # toutes les commandes disponibles avec le bot
 
@@ -71,26 +91,87 @@ async def create_character(ctx, name:str):
 
     if os.path.isfile(path) : await ctx.send("Ce personnage existe déjà."); return
     
-    with open(path, 'w') as json_file:
-        json.dump({"test":1} , json_file)
+    carac = get_carac(ctx)
+    if carac[0] == '' : await ctx.send("Le système " + sys + " n'a pas de caractéristique propre."); return
 
-    await ctx.send("Le personnage {} a bien été créé pour le joueur {}.".format(name,user))
+    await ctx.send("Il faut maintenant renseigner les valeurs de chaque caractéristique")
+
+
+    def check(author):
+        def inner_check(message): 
+            if message.author != author:
+                return False
+            try: 
+                int(message.content) 
+                return True 
+            except ValueError:
+                return False
+        return inner_check
+
+    stats = {}
+    i = 0
+    await ctx.send("Saisissez vos valeurs de caractéristiques, les nombres doivent être positifs et entiers.")
+    while( i < len(carac) ):
+        c = carac[i]
+        await ctx.send(c + " : ")
+        msg = await bot.wait_for('message', check=check(ctx.author),timeout=30)
+        if not msg.author.name == user : continue
+        try: 
+            msg = int(msg.content)
+            if not msg >= 0 : raise
+            stats[c] = msg
+            i = i + 1
+        except:
+            await ctx.send("Il y a eu un problème dans la lecture de votre saisie.")
+
+
+    open(path,'w')
+    with open(path, 'w') as json_file : json.dump(stats,json_file)
+
+    show_stat = "Le personnage a les caractéristiques suivantes : "
+    for key,value in stats.items():
+        show_stat = show_stat + "\n" + key + " : " + str(value)
+
+    await ctx.send("\nLe personnage {} a bien été créé pour le joueur {}.".format(name,user))
+    await ctx.send(show_stat)
+
+@bot.command(name='choose_character', aliases=['cch'], help="Permet à un joueur de choisir le personnage qu'il souhaite utiliser dans le système courant, alis : cch.")
+async def funcname(ctx, character:str):
+    sys = get_sys(ctx)
+    path = path_sys + sys+'/' + 'character.json'
+    data = {}
+    with open(path,'r') as json_file : 
+        try : data = json.load(json_file)
+        except:pass
+    user = ctx.author.name
+    _path = path_sys + sys+'/' + user
+
+    if not character in [f.split('.')[0] for f in os.listdir(_path)] : await ctx.send("Le personnage n'est pas disponible."); return
+
+    data[user] = character
+    with open(path,'w') as json_file : json.dump(data,json_file)
+    await ctx.send("Le personnage de " + user + " est maintenant " + character + ".")
 
 
 @bot.command(name='add_carac', aliases=['ac'], help='Ajoute des capacités dans la liste des capacités disponibles du système courant, alias : ac.')
 async def add_carac(ctx, *carac:str):
     sys = get_sys(ctx)
     if sys is None : await ctx.send("Choisissez le système courant auquel ajouter les caractéristiques"); return
-    with open(path_sys + sys + '/' + sys + '.txt', 'a') as _file : _file.write("|".join(carac))
+    with open(path_sys + sys + '/' + sys + '.txt', 'r') as _file : data = _file.read().split('|')
+    for c in carac: data.append(c)
+    data = [d for d in data if not d==""]
+    with open(path_sys + sys + '/' + sys + '.txt', 'w') as _file : _file.write("|".join(data))
     await ctx.send("Les caractéristiques suivantes ont été ajoutés au système " + sys + " : " + ", ".join(carac) + '.')
 
 @bot.command(name='rm_carac', aliases=['rc'], help='Supprime des capacités dans la liste des capacités disponibles du système courant, alias : rc.')
 async def rm_carac(ctx, *carac:str):
+    if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission de supprimer des systèmes."); return
     sys = get_sys(ctx)
     if sys is None : await ctx.send("Choisissez le système courant duquel supprimer les caractéristiques"); return
     data = []
     with open(path_sys + sys + '/' + sys + '.txt', 'r') as _file : data = _file.read().split('|')
     data = [x for x in data if x not in carac]
+    data = [d for d in data if not d==""]
     with open(path_sys + sys + '/' + sys + '.txt', 'w') as _file : _file.write('|'.join(data))
     await ctx.send("Voici les nouvelles caractéristiques du système " + sys + " : " + ", ".join(data) + '.')
 
@@ -117,13 +198,16 @@ async def change_system(ctx, newstate:str, option:str=None):
             w = newstate+'\n'
             filesys.write(w)
             
+        path = path_sys + newstate
         try:
-            path = path_sys + newstate
             os.mkdir(path)
-            path = path + '/' + newstate + '.txt'
-            open(path,'a').close()
+            _path = path + '/' + newstate + '.txt'
+            open(_path,'a').close()
         except:
             await ctx.send("Le dossier n'a pas pu être créé.")
+
+        _path = path + '/' + 'character' + '.json'
+        open(_path,'a').close()
 
         await ctx.send(newstate + " a bien été ajouté aux systèmes jouables !")
         return
@@ -183,54 +267,84 @@ async def show(ctx):
     user = ctx.author.name
     guild = ctx.guild.name
     curr_sys = "None"
-    with open(path_sys_json,'r') as json_file:
-        data = json.load(json_file)
-        try : curr_sys = data[ctx.guild.name]
-        except : pass
+
+    try:
+        with open(path_sys_json,'r') as json_file:
+            data = json.load(json_file)
+            curr_sys = data[ctx.guild.name]
+    except : pass
+
     sys = "None"
     try:
         with open(path_sys_txt,'r') as f:
             sys = [i.strip() for i in f.readlines()]
         sys = ", ".join(sys)
     except:sys="None"
+
+    character = get_character(ctx)
+    all_character = "None"
+
+    try : 
+        if not sys == "None":
+            _path = path_sys + curr_sys+'/' + user
+            li = [f.split('.')[0] for f in os.listdir(_path)]
+            all_character = ", ".join(li)
+    except : pass
+
     embed = discord.Embed(title= "Infos générales")
     embed.add_field(name="user", value=user, inline=False)
     embed.add_field(name="guild", value=guild, inline=False)
     embed.add_field(name="current system", value=curr_sys, inline=False)
     if not (sys == ""): embed.add_field(name="available systems", value=sys, inline=False)
+    if not (character == ""): embed.add_field(name="current character", value=character, inline=False)
+    if not (all_character == ""): embed.add_field(name="available character", value=all_character, inline=False)
     await ctx.send(embed=embed)
 
 
 
 @bot.command(name='roll', aliases=['r'], help='Fait un test sous une compétence données en utilisant un personnage avec un modificateur optionnel.')
 async def lilroll(ctx, test: str, mod: int=0):
+    
+    user = ctx.author.name
+    char = get_character(ctx)
+    if char == "None" : await ctx.send("Vous n'utilisez actuellement aucun personnage."); return
+    sys = get_sys(ctx)
+    if sys == "None" : await ctx.send("Vous n'utilisez actuellement aucun système de jeu."); return
+    # test = " ".join(test)
+    test = test.lower()
+    carac = get_carac(ctx)
+    spell = spellcheck(carac)
+    test = spell.correction(test)
+    print(test)
+
+    if test not in carac : await ctx.send("Le test n'est pas reconnu."); return
+
+    _path_character = path_sys + sys+'/' + 'character.json'
+    character = ""
+    with open(_path_character,'r') as json_file : character = json.load(json_file)[user]
+    
+    _path_carac = path_sys + sys+'/' + user+'/' + character + '.json'
+    
+    data = {}
+    with open(_path_carac,'r') as json_file : data = json.load(json_file)
 
     roll = random.randint(1,100)
     if roll <= 10: await play(ctx,path_sound+'victory.mp3')
     elif roll >= 90 : await play(ctx,path_sound+'fail.mp3')
     else : await play(ctx,path_sound+'dice_sound.mp3')
 
+    value = data[test]
 
-    with open(path,'r') as json_file:
-        data = json.load(json_file)
-        keys = data.keys()
-        spell.word_frequency.load_words(keys)
-        test = test.lower()
-        test = spell.correction(test)
-        result = result + test + ' \n'
-        if not test in keys: await ctx.send("La caractéristique n'est pas reconnue."); return
-        result = result + "Roll : " + str(roll) + "/" + str(data[test]+mod) + ', '
-        if roll <= 10:
-            result = result + "SUCCES CRITIQUE !!!"
-        elif roll >= 90:
-            result = result + "ECHEC CRITIQUE !!!"
-        elif roll <= data[test] + mod:
-            result = result + "reussite ! "
-        elif roll > data[test] + mod:
-            result = result + "echec ! "
-        else:
-            await ctx.send("check spelling")
-            return
+    result = char + " fait un test sous son " + test + " :\n" + str(roll) + '/' + str(value+mod) + " : "
+
+    true_value = value + mod
+    
+    if roll <= 10: result = result + "SUCCES CRITIQUE !"
+    elif roll >= 90: result = result + "ECHEC CRITIQUE !"
+    elif roll <= true_value: result = result + "succès."
+    elif roll > true_value: result = result + "échec."
+    else: result = result + "valeur non interprétée."
+
     await ctx.send(result)
 
 @bot.command(name='carac', help='Liste toutes les caractéristiques disponibles pour le personnage.')
