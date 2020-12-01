@@ -135,7 +135,23 @@ async def create_character(ctx, name:str):
     await ctx.send("\nLe personnage {} a bien été créé pour le joueur {}.".format(name,user))
     await ctx.send(show_stat)
 
-@bot.command(name='choose_character', aliases=['cch'], help="Permet à un joueur de choisir le personnage qu'il souhaite utiliser dans le système courant, alis : cch.")
+@bot.command(name="set_caracteristic", aliases=['setc'], help="Modifie la valeur d'une caractéristique du personnage courant, l'ajoute si elle n'existe pas, alias : setc.")
+async def set_caracteristic(ctx, carac:str, value:int):
+    sys = get_sys(ctx)
+    user = ctx.author.name
+    character = get_character(ctx)
+    if sys == "None": await ctx.send("Pas de système courant."); return
+    if character == "None": await ctx.send("Pas de personnage courant."); return
+    data = {}
+    _path = path_sys + sys+'/' + user+'/' + character + '.json'
+    with open(_path,'r') as json_file:
+        try : data = json.load(json_file)
+        except : pass
+    data[carac] = value
+    with open(_path,'w') as json_file: json.dump(data,json_file)
+    await ctx.send("Le personnage " + character + " de " + user + " a maintenant la compétence de " + carac + " à " + str(value) + ".")
+
+@bot.command(name='choose_character', aliases=['cch'], help="Permet à un joueur de choisir le personnage qu'il souhaite utiliser dans le système courant, alias : cch.")
 async def funcname(ctx, character:str):
     sys = get_sys(ctx)
     path = path_sys + sys+'/' + 'character.json'
@@ -156,7 +172,7 @@ async def funcname(ctx, character:str):
 @bot.command(name='add_carac', aliases=['ac'], help='Ajoute des capacités dans la liste des capacités disponibles du système courant, alias : ac.')
 async def add_carac(ctx, *carac:str):
     sys = get_sys(ctx)
-    if sys is None : await ctx.send("Choisissez le système courant auquel ajouter les caractéristiques"); return
+    if sys is "None" : await ctx.send("Choisissez le système courant auquel ajouter les caractéristiques"); return
     with open(path_sys + sys + '/' + sys + '.txt', 'r') as _file : data = _file.read().split('|')
     for c in carac: data.append(c)
     data = [d for d in data if not d==""]
@@ -315,7 +331,6 @@ async def lilroll(ctx, test: str, mod: int=0):
     carac = get_carac(ctx)
     spell = spellcheck(carac)
     test = spell.correction(test)
-    print(test)
 
     if test not in carac : await ctx.send("Le test n'est pas reconnu."); return
 
@@ -366,7 +381,7 @@ async def listCharacter(ctx):
     await ctx.send(result)
 
 
-@bot.command(name='shutdown', aliases=['sd','quit'], help='Termine le bot.')
+# @bot.command(name='shutdown', aliases=['sd','quit'], help='Termine le bot.')
 async def shutdown(ctx):
     global vc
     try:
