@@ -26,7 +26,7 @@ def get_config():
 
 def update(data):
     with open(PATH,'w') as json_file:
-        try: json.dump(data,json_file)
+        try: json.dump(data,json_file,indent=2, separators=(', ',': '), sort_keys=True)
         except: return -1
     return 1
 
@@ -55,7 +55,7 @@ def spellcheck(words):
     spell.word_frequency.load_words(words)
     return spell
 
-def get_sys(ctx):
+def get_system(ctx):
     guild = get_guild(ctx)
     config = get_config()
     try : return config["curr_sys"][guild]
@@ -75,38 +75,38 @@ def get_guild(ctx):
 
 def get_carac(ctx):
     config = get_config()
-    sys = get_sys(ctx)
+    sys = get_system(ctx)
     try : return config["sys"][sys]["carac_system"]
     except : return None
 
-# def get_character(ctx):
-#     config = get_config()
-#     sys = get_sys(ctx)
-#     pass
-
-def get_all_character_in_sys(ctx):
+def get_character(ctx):
     config = get_config()
-    sys = get_sys(ctx)
+    sys = get_system(ctx)
     user = get_user(ctx)
-    try : return list(config["sys"][sys]["characters"][user]["character"].keys())
+    try : return config["sys"][sys]["characters"][user]["curr_character"]
+    except : return None
+
+def get_all_character(ctx):
+    config = get_config()
+    system = get_system(ctx)
+    user = get_user(ctx)
+    try : return list(config["sys"][system]["characters"][user]["characters"].keys())
     except : return None
 
 # toutes les commandes disponibles avec le bot
 
 @bot.command(name='createc', aliases=['cc'], help="Commande pour créer son personnage, alias : cc.")
 async def create_character(ctx, name:str):
-    system = get_sys(ctx)
+    system = get_system(ctx)
     user = get_user(ctx)
     if system is None : await ctx.send("Le serveur n'utilise actuellement aucun système, choisissez-en un !"); return
 
     config = get_config()
     
-    try : characters = list(config["sys"][system]["characters"][user]["characters"].keys())
-    except : characters = []
-    print(characters)
+    characters = get_all_character(ctx)
 
-    if len(characters) == 0 : config["sys"][system]["characters"][user] = {"characters":{},"curr_character":None}
-    if name in characters : await ctx.send("Ce personnage existe déjà."); return
+    if characters is None : config["sys"][system]["characters"][user] = {"characters":{},"curr_character":None}
+    elif name in characters : await ctx.send("Ce personnage existe déjà."); return
     
     carac = get_carac(ctx)
     if len(carac)==0 : await ctx.send("Le système " + system + " n'a pas de caractéristique propre."); return
@@ -151,31 +151,65 @@ async def create_character(ctx, name:str):
     await ctx.send("\nLe personnage {} a bien été créé pour le joueur {}.".format(name,user))
     await ctx.send(show_stat)
 
-@bot.command(name='choose_character', aliases=['cch'], help="Permet à un joueur de choisir le personnage qu'il souhaite utiliser dans le système courant, alis : cch.")
+@bot.command(name="set_caracteristic", aliases=['setc'], help="Modifie la valeur d'une caractéristique du personnage courant, l'ajoute si elle n'existe pas, alias : setc.")
+async def set_caracteristic(ctx, carac:str, value:int):
+    
+    config = get_config()
+    user = get_user(ctx)
+    guild = get_guild(ctx)
+    character = get_character(ctx)
+    if character is None : await ctx.send("Il faut choisir un personnage courant."); return
+    system = get_system(ctx)
+    if system is None : await ctx.send("Il faut choisir un système courant."); return
+    
+    caracteristics = config["sys"][system]["characters"][user]["characters"][character]
+    caracteristics[carac] = value
+    config["sys"][system]["characters"][user]["characters"][character] = caracteristics
+
+    update(config)
+    await ctx.send("Le personnage " + character + " a maintenant " + str(value) + " en carac.")
+
+@bot.command(name='choose_character', aliases=['cch'], help="Permet à un joueur de choisir le personnage qu'il souhaite utiliser dans le système courant, alias : cch.")
 async def funcname(ctx, character:str):
-    sys = get_sys(ctx)
+    system = get_system(ctx)
+    if system is None : await ctx.send("Choisissez un système."); return
     config = get_config()
     user = get_user(ctx)
     
-    try: characters = config["system"]["characters"][user][sys].keys()
-    except : characters = []
+    characters = get_all_character(ctx)
 
     if not character in characters : await ctx.send(character + " n'est pas disponible."); return
 
-    config["curr_characters"][user][sys] = character
+    config["sys"][system]["characters"][user]["curr_character"] = character
 
     if not update(config) : await ctx.send("Il y a eu un problème dans l'enregistrement."); return
     await ctx.send("Le personnage de " + user + " est maintenant " + character + ".")
 
+@bot.command(name='show_character', aliases=['sch'], help="Permet à un joueur d'afficher son personnage actuel', alias : cch.")
+async def funcname(ctx):
+    system = get_system(ctx)
+    if system is None : await ctx.send("Choisissez un système."); return
+    config = get_config()
+    user = get_user(ctx)
+    character = get_character(ctx)
+    if character is None : await ctx.send("Choisissez un personnage."); return
+
+    caracteristics = config["sys"][system]["characters"][user]["characters"][character]
+
+    embed = discord.Embed(title= character)
+    
+    for key,value in caracteristics.items():
+        embed.add_field(name = key, value = str(value))
+    await ctx.send(embed=embed)
 
 @bot.command(name='add_carac', aliases=['ac'], help='Ajoute des capacités dans la liste des capacités disponibles du système courant, alias : ac.')
 async def add_carac(ctx, *carac:str):
-    sys = get_sys(ctx)
+    sys = get_system(ctx)
     config = get_config()
     if sys is None : await ctx.send("Choisissez le système courant auquel ajouter les caractéristiques"); return
 
     caracteristics = config["sys"][sys]["carac_system"]
-    for c in carac: caracteristics.append(c)
+    for c in carac: caracteristics.append(c.lower())
     config["sys"][sys]["carac_system"] = caracteristics
 
     if not update(config) : await ctx.send("Il y a eu un problème dans l'enregistrement."); return
@@ -184,7 +218,7 @@ async def add_carac(ctx, *carac:str):
 @bot.command(name='rm_carac', aliases=['rc'], help='Supprime des capacités dans la liste des capacités disponibles du système courant, alias : rc.')
 async def rm_carac(ctx, *carac:str):
     if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission de supprimer des systèmes."); return
-    sys = get_sys(ctx)
+    sys = get_system(ctx)
     config = get_config()
     if sys is None : await ctx.send("Choisissez le système courant duquel supprimer les caractéristiques"); return
     
@@ -198,7 +232,7 @@ async def rm_carac(ctx, *carac:str):
 
 @bot.command(name='show_carac', aliases=['sc'], help='Montre les capacités disponibles du système courant, alias : sc.')
 async def show_carac(ctx):
-    system = get_sys(ctx)
+    system = get_system(ctx)
     config = get_config()
     if system is None : await ctx.send("Choisissez le système courant duquel supprimer les caractéristiques"); return
     
@@ -206,6 +240,15 @@ async def show_carac(ctx):
     if len(caracteristics) == 0 : await ctx.send("Il n'y a pas encore de caractéristiques dans ce système."); return
     await ctx.send("Le système " + system + " possède les caractéristiques suivantes : " + ", ".join(caracteristics))
 
+@bot.command(name="h", help="Affiche les aides des commandes")
+async def h(ctx):
+    text = {}
+    with open("./help.json",'r') as json_file : text = json.load(json_file)
+    embed = discord.Embed(title= "Aide sur les commandes")
+    for key,value in text.items():
+        embed.add_field(name=key, value=value, inline=False)
+
+    await ctx.send(embed=embed)
 
 @bot.command(name='system', aliases=['sys'], help='Permet de définir le système de jeu utilisé dans tout le serveur Discord. option : c (nouveau système)')
 async def change_system(ctx, newstate:str, option:str=None):
@@ -229,7 +272,7 @@ async def change_system(ctx, newstate:str, option:str=None):
     except : pass
 
     if option is "d":
-        if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission de supprimer des systèmes."); return
+        # if not ctx.author.has_permissions() : await ctx.send("Vous n'avez pas la permission de supprimer des systèmes."); return
         if newstate not in systems : await ctx.send(newstate + " ne fait pas partie de la liste."); return
         
         del config["sys"][newstate]
@@ -251,16 +294,30 @@ async def change_system(ctx, newstate:str, option:str=None):
 
 @bot.command(name='info', aliases=['i'], help='Informations générales.')
 async def show(ctx):
+
     user = get_user(ctx)
+
     guild = get_guild(ctx)
-    curr_sys = get_sys(ctx)
-        
+
+    curr_sys = get_system(ctx)
+    if curr_sys is None : curr_sys = "None"
+
+    character = get_character(ctx)
+    if character is None: character = "None"
+
+    try : all_sys = ", ".join(list(get_all_sys(ctx)))
+    except : all_sys = "None"
+    if len(all_sys) == 0 : all_sys = "None"
+
+    try : all_character = ", ".join(list(get_all_character(ctx)))
+    except : all_character = "None"
+    if len(all_character) == 0 : all_character = "None"
 
     embed = discord.Embed(title= "Infos générales")
     embed.add_field(name="user", value=user, inline=False)
     embed.add_field(name="guild", value=guild, inline=False)
     embed.add_field(name="current system", value=curr_sys, inline=False)
-    embed.add_field(name="available systems", value=sys, inline=False)
+    embed.add_field(name="available systems", value=all_sys, inline=False)
     embed.add_field(name="current character", value=character, inline=False)
     embed.add_field(name="available character", value=all_character, inline=False)
     await ctx.send(embed=embed)
@@ -270,37 +327,29 @@ async def show(ctx):
 @bot.command(name='roll', aliases=['r'], help='Fait un test sous une compétence données en utilisant un personnage avec un modificateur optionnel.')
 async def lilroll(ctx, test: str, mod: int=0):
     
-    user = ctx.author.name
-    char = get_character(ctx)
-    if char == "None" : await ctx.send("Vous n'utilisez actuellement aucun personnage."); return
-    sys = get_sys(ctx)
-    if sys == "None" : await ctx.send("Vous n'utilisez actuellement aucun système de jeu."); return
-    # test = " ".join(test)
+    config = get_config()
+    user = get_user(ctx)
+    character = get_character(ctx)
+    system = get_system(ctx)
+
+    if character is None : await ctx.send("Vous n'utilisez actuellement aucun personnage."); return
+    if system is None : await ctx.send("Vous n'utilisez actuellement aucun système de jeu."); return
+
     test = test.lower()
-    carac = get_carac(ctx)
+    carac = config["sys"][system]["characters"][user]["characters"][character]  
     spell = spellcheck(carac)
     test = spell.correction(test)
-    print(test)
 
     if test not in carac : await ctx.send("Le test n'est pas reconnu."); return
-
-    _path_character = path_sys + sys+'/' + 'character.json'
-    character = ""
-    with open(_path_character,'r') as json_file : character = json.load(json_file)[user]
     
-    _path_carac = path_sys + sys+'/' + user+'/' + character + '.json'
-    
-    data = {}
-    with open(_path_carac,'r') as json_file : data = json.load(json_file)
-
     roll = random.randint(1,100)
     if roll <= 10: await play(ctx,'./data_sound/victory.mp3')
     elif roll >= 90 : await play(ctx,'./data_sound/fail.mp3')
     else : await play(ctx,'./data_sound/dice_sound.mp3')
 
-    value = data[test]
+    value = carac[test]
 
-    result = char + " fait un test sous son " + test + " :\n" + str(roll) + '/' + str(value+mod) + " : "
+    result = character + " fait un test sous son " + test + " :\n" + str(roll) + '/' + str(value+mod) + " : "
 
     true_value = value + mod
     
@@ -313,27 +362,21 @@ async def lilroll(ctx, test: str, mod: int=0):
     await ctx.send(result)
 
 @bot.command(name='carac', help='Liste toutes les caractéristiques disponibles pour le personnage.')
-async def lilroll(ctx, character: str):
-    if len(character) == 1 : character = trans[character]
-    path = './data_characters/' + character + '.json'
-    result = ''
-    with open(path,'r') as json_file:
-        data = json.load(json_file)
-        result = "\n".join(data.keys())
-    await ctx.send(result)
-
-@bot.command(name='characters', help='Liste tous les personnages disponibles. (va disparaitre)')
-async def listCharacter(ctx):
-    path = os.getcwd() + '/data_characters'
-    files = os.listdir(path)
-    f = [f.split('.')[0] for f in files]
-    result = "\n".join(f)
+async def lilroll(ctx):
+    config = get_config()
+    system = get_system(ctx)
+    user = get_user(ctx)
+    character = get_character(ctx)
+    if character is None: await ctx.send("Choisissez un personnage courant."); return
+    caracteristics = list(config["sys"][system]["characters"][user]["characters"][character].keys())
+    
+    result = ", ".join(caracteristics)
     await ctx.send(result)
 
 
 @bot.command(name='shutdown', aliases=['sd','quit'], help='Termine le bot.')
 async def shutdown(ctx):
-    global vc
+    if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission de supprimer des systèmes."); return
     try:
         await ctx.voice_client.disconnect()
     except:
@@ -361,7 +404,7 @@ async def dice(ctx,dice:str):
 @bot.event
 async def on_ready():
     print('Connected to Discord!')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,name='/help'))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,name='/h'))
 
 # gestion de toutes les erreurs
 @bot.event

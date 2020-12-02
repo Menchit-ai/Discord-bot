@@ -1,1 +1,7 @@
-{"sys": {}, "curr_sys": {"JDR": null, "Strat": null}}
+{
+  "curr_sys": {
+    "JDR": null, 
+    "Strat": null
+  }, 
+  "sys": {}
+}
