@@ -61,6 +61,12 @@ def get_sys(ctx):
     try : return config["curr_sys"][guild]
     except : return None
 
+def get_all_sys(ctx):
+    guild = get_guild(ctx)
+    config = get_config()
+    try : return list(config["sys"].keys())
+    except : return None
+
 def get_user(ctx):
     return ctx.author.name
 
@@ -78,26 +84,34 @@ def get_carac(ctx):
 #     sys = get_sys(ctx)
 #     pass
 
+def get_all_character_in_sys(ctx):
+    config = get_config()
+    sys = get_sys(ctx)
+    user = get_user(ctx)
+    try : return list(config["sys"][sys]["characters"][user]["character"].keys())
+    except : return None
+
 # toutes les commandes disponibles avec le bot
 
 @bot.command(name='createc', aliases=['cc'], help="Commande pour créer son personnage, alias : cc.")
 async def create_character(ctx, name:str):
-    sys = get_sys(ctx)
+    system = get_sys(ctx)
     user = get_user(ctx)
-    if sys is None : await ctx.send("Le serveur n'utilise actuellement aucun système, choisissez-en un !"); return
+    if system is None : await ctx.send("Le serveur n'utilise actuellement aucun système, choisissez-en un !"); return
 
     config = get_config()
     
-    try : characters = config["system"]["characters"][user][sys].keys()
+    try : characters = list(config["sys"][system]["characters"][user]["characters"].keys())
     except : characters = []
+    print(characters)
 
+    if len(characters) == 0 : config["sys"][system]["characters"][user] = {"characters":{},"curr_character":None}
     if name in characters : await ctx.send("Ce personnage existe déjà."); return
     
     carac = get_carac(ctx)
-    if carac[0] == '' : await ctx.send("Le système " + sys + " n'a pas de caractéristique propre."); return
+    if len(carac)==0 : await ctx.send("Le système " + system + " n'a pas de caractéristique propre."); return
 
     await ctx.send("Il faut maintenant renseigner les valeurs de chaque caractéristique")
-
 
     def check(author):
         def inner_check(message): 
@@ -126,7 +140,7 @@ async def create_character(ctx, name:str):
         except:
             await ctx.send("Il y a eu un problème dans la lecture de votre saisie.")
 
-    config["system"]["characters"][user][sys][name] = stats
+    config["sys"][system]["characters"][user]["characters"][name] = stats
 
     if not update(config) : await ctx.send("Il y a eu un problème dans l'enregistrement des caractéristiques."); return
 
@@ -174,10 +188,10 @@ async def rm_carac(ctx, *carac:str):
     config = get_config()
     if sys is None : await ctx.send("Choisissez le système courant duquel supprimer les caractéristiques"); return
     
-    caracteristics = config["sys"][sys]
+    caracteristics = config["sys"][sys]["carac_system"]
     caracteristics = [x for x in caracteristics if x not in carac]
     caracteristics = [d for d in caracteristics if not d==""]
-    config["sys"][sys] = caracteristics
+    config["sys"][sys]["carac_system"] = caracteristics
 
     if not update(config) : await ctx.send("Il y a eu un problème dans l'enregistrement."); return
     await ctx.send("Voici les nouvelles caractéristiques du système " + sys + " : " + ", ".join(caracteristics) + '.')
@@ -205,9 +219,9 @@ async def change_system(ctx, newstate:str, option:str=None):
         if newstate in systems: await ctx.send(newstate + " est déjà présent dans les systèmes utilisables !");return
         
         config["sys"][newstate] = {"carac_system":[], "characters":{}}
-
+        config["curr_sys"][guild] = newstate
         update(config)
-        await ctx.send(newstate + " a bien été ajouté aux systèmes jouables !")
+        await ctx.send(newstate + " a bien été ajouté aux systèmes jouables et est maintenant le système courant.")
         return
 
     spell = spellcheck(systems)
@@ -240,37 +254,15 @@ async def show(ctx):
     user = get_user(ctx)
     guild = get_guild(ctx)
     curr_sys = get_sys(ctx)
-
-    try:
-        with open(path_sys_json,'r') as json_file:
-            data = json.load(json_file)
-            curr_sys = data[ctx.guild.name]
-    except : pass
-
-    sys = "None"
-    try:
-        with open(path_sys_txt,'r') as f:
-            sys = [i.strip() for i in f.readlines()]
-        sys = ", ".join(sys)
-    except:sys="None"
-
-    character = get_character(ctx)
-    all_character = "None"
-
-    try : 
-        if not sys == "None":
-            _path = path_sys + curr_sys+'/' + user
-            li = [f.split('.')[0] for f in os.listdir(_path)]
-            all_character = ", ".join(li)
-    except : pass
+        
 
     embed = discord.Embed(title= "Infos générales")
     embed.add_field(name="user", value=user, inline=False)
     embed.add_field(name="guild", value=guild, inline=False)
     embed.add_field(name="current system", value=curr_sys, inline=False)
-    if not (sys == ""): embed.add_field(name="available systems", value=sys, inline=False)
-    if not (character == ""): embed.add_field(name="current character", value=character, inline=False)
-    if not (all_character == ""): embed.add_field(name="available character", value=all_character, inline=False)
+    embed.add_field(name="available systems", value=sys, inline=False)
+    embed.add_field(name="current character", value=character, inline=False)
+    embed.add_field(name="available character", value=all_character, inline=False)
     await ctx.send(embed=embed)
 
 
