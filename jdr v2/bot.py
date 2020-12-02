@@ -192,7 +192,7 @@ async def rm_carac(ctx, *carac:str):
     await ctx.send("Voici les nouvelles caractéristiques du système " + sys + " : " + ", ".join(data) + '.')
 
 @bot.command(name='show_carac', aliases=['sc'], help='Montre les capacités disponibles du système courant, alias : sc.')
-async def rm_carac(ctx):
+async def show_carac(ctx):
     sys = get_sys(ctx)
     if sys is None : await ctx.send("Choisissez le système courant duquel supprimer les caractéristiques"); return
     data = []

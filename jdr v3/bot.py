@@ -16,13 +16,13 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 client = discord.Client()
 bot = commands.Bot(command_prefix='/')
 
-######  CHEMIN DE BASE  #########
+###########  CHEMIN DE BASE  ###########
 path_data     = "./data/"
 path_sound    = "./data/data_sound/"
 path_sys      = "./data/data_sys/"
 path_sys_json = path_sys + "system.json"
 path_sys_txt  = path_sys + "system.txt"
-#################################
+########################################
 
 async def play(ctx,path):
     try:
@@ -156,7 +156,7 @@ async def funcname(ctx, character:str):
 @bot.command(name='add_carac', aliases=['ac'], help='Ajoute des capacités dans la liste des capacités disponibles du système courant, alias : ac.')
 async def add_carac(ctx, *carac:str):
     sys = get_sys(ctx)
-    if sys is None : await ctx.send("Choisissez le système courant auquel ajouter les caractéristiques"); return
+    if sys is "None" : await ctx.send("Choisissez le système courant auquel ajouter les caractéristiques"); return
     with open(path_sys + sys + '/' + sys + '.txt', 'r') as _file : data = _file.read().split('|')
     for c in carac: data.append(c)
     data = [d for d in data if not d==""]
