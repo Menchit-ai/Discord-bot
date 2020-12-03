@@ -4,6 +4,7 @@ import shutil
 import pathlib
 
 import random
+from datetime import datetime
 import json
 from spellchecker import SpellChecker
 
@@ -376,7 +377,7 @@ async def lilroll(ctx):
 
 @bot.command(name='shutdown', aliases=['sd','quit'], help='Termine le bot.')
 async def shutdown(ctx):
-    if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission de supprimer des systèmes."); return
+    if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'arrêter le bot."); return
     try:
         await ctx.voice_client.disconnect()
     except:
@@ -385,7 +386,7 @@ async def shutdown(ctx):
     await ctx.send("Shutdown")
     await bot.change_presence(status=discord.Status.offline)
     print("Bot closed")
-    exit(0)
+    sys.exit(1)
 
 @bot.command(name='dice', aliases=['d'], help='Lance des dés [n°dés]d[n°faces]')
 async def dice(ctx,dice:str):
@@ -400,11 +401,19 @@ async def dice(ctx,dice:str):
     result = str(sum(li)) + '\n' + 'Details : ' + dice + " " + str(li)
     await ctx.send(result)
 
+@bot.command(name="report", help="Use for report bug or way of improvements.")
+async def report(ctx, *message:str):
+    date = datetime.now()
+    message = " ".join(message)
+    message = str(date) + " : " + message + "\n"
+    message = message.encode("UTF-8")
+    with open("D:/perso/discordBot/jdr v3/report.txt",'ab') as f: f.write(message)
+    await ctx.send("Votre rapport a bien été enregistré, merci.")
 
 @bot.event
 async def on_ready():
     print('Connected to Discord!')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,name='/h'))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,name='/h for help'))
 
 # gestion de toutes les erreurs
 @bot.event
