@@ -1,0 +1,60 @@
+{
+  "curr_sys": {
+    "JDR": "test", 
+    "Strat": "TFTL"
+  }, 
+  "sys": {
+    "TFTL": {
+      "carac_system": [], 
+      "characters": {}
+    }, 
+    "stars": {
+      "carac_system": [], 
+      "characters": {}
+    }, 
+    "test": {
+      "carac_system": [
+        "boire", 
+        "dormir", 
+        "manger"
+      ], 
+      "characters": {
+        "Chicken Potatoes": {
+          "characters": {
+            "siki": {
+              "boire": 50, 
+              "dormir": 12, 
+              "manger": 45
+            }
+          }, 
+          "curr_character": "siki"
+        }, 
+        "Menchrof": {
+          "characters": {
+            "Lui": {
+              "boire": 45, 
+              "dormir": 65, 
+              "manger": 84
+            }, 
+            "Menchrof": {
+              "boire": 1, 
+              "dormir": 99, 
+              "manger": 50
+            }, 
+            "essai": {
+              "boire": 45, 
+              "dormir": 65, 
+              "manger": 32
+            }, 
+            "essai2": {
+              "boire": 45, 
+              "dormir": 65, 
+              "manger": 32
+            }
+          }, 
+          "curr_character": "Menchrof"
+        }
+      }
+    }
+  }
+}
