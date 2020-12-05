@@ -30,7 +30,7 @@ def get_config():
     return data
 
 def clean():
-    #put the ancient exe in an another folder
+    #put the ancient exe in an another folder and clear the main folder
     _file = [i for i in os.listdir() if os.path.isfile(i) and '.exe' in i]
     if len(_file) == 1:return
     v = [int(re.findall("\d+",i)[0]) for i in _file]
@@ -113,6 +113,23 @@ def get_all_character(ctx):
     user = get_user(ctx)
     try : return list(config["sys"][system]["characters"][user]["characters"].keys())
     except : return None
+
+async def rollTFTL(ctx,config,user,character,system,test):
+    test = test.split('+')
+    carac = config["sys"][system]["characters"][user]["characters"][character]
+    await play(ctx,'./data_sound/victory.mp3')
+
+    for i in test : 
+        if i not in carac : await ctx.send("Test non reconnu."); return
+
+    nbdice = int(carac[test[0]]) + int(carac[test[1]])
+    result = [random.randint(1,6) for i in range(nbdice)]
+    if 6 in result:
+        result = [str(i) for i in result]
+        await ctx.send("Lancés : " + " ".join(result) + "\n" + "Réussite !")
+    else :
+        result = [str(i) for i in result]
+        await ctx.send("Lancés : " + " ".join(result) + "\n" + "Echec !")
 
 # toutes les commandes disponibles avec le bot
 
@@ -358,12 +375,15 @@ async def lilroll(ctx, test: str, mod: int=0):
     if system is None : await ctx.send("Vous n'utilisez actuellement aucun système de jeu."); return
 
     test = test.lower()
+    print("test in")
+    if system == "TFTL" : await rollTFTL(ctx,config,user,character,system,test); return
+
     carac = config["sys"][system]["characters"][user]["characters"][character]  
     spell = spellcheck(carac)
     test = spell.correction(test)
 
     if test not in carac : await ctx.send("Le test n'est pas reconnu."); return
-    
+
     roll = random.randint(1,100)
     if roll <= 10: await play(ctx,'./data_sound/victory.mp3')
     elif roll >= 90 : await play(ctx,'./data_sound/fail.mp3')
