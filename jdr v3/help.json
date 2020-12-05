@@ -11,5 +11,5 @@
     "carac" : "permet d'avoir les caracteristiques du personnage courant\ncarac () : /carac",
     "d" : "permet de faire un lancer de des\ndice (d): /d [nb des]d[nb faces]",
     "Important" : "si vous avez des suggestions d'ameliorations ou que vous voulez report un bug, utilisez la commande /report [votre message]",
-    "DISCLAIMER" : "pour l instant seul le systeme d100 est utilisable, d autres seront rajoutes par la suite."
+    "DISCLAIMER" : "pour l instant seul le systeme d100 est utilisable, d autres seront rajoutes par la suite.\nNe jamais utiliser d espace, toujours de underscore"
 }

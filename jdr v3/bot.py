@@ -1,5 +1,7 @@
 # bot.py
 import os
+import re
+import subprocess
 import shutil
 import pathlib
 import sys
@@ -14,6 +16,7 @@ from discord.ext import commands
 
 
 TOKEN = os.getenv('DISCORD_TOKEN')
+ME = os.getenv('DISCORD_ID_ME')
 PATH = "D:\perso\discordBot\jdr v3\config.json"
 
 client = discord.Client()
@@ -25,6 +28,16 @@ def get_config():
         try: data = json.load(json_file)
         except: return -1
     return data
+
+def clean():
+    #put the ancient exe in an another folder
+    _file = [i for i in os.listdir() if os.path.isfile(i) and '.exe' in i]
+    v = [int(re.findall("\d+",i)[0]) for i in _file]
+    curr_v = max(v)
+    v = [i for i in v if i < curr_v]
+    v = ["bot"+str(i)+".exe" for i in v]
+    for f in v:
+        os.remove(f)
 
 def update(data):
     with open(PATH,'w') as json_file:
@@ -394,18 +407,29 @@ async def shutdown(ctx):
 async def shutdown(ctx):
     if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
 
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    os.system("pyinstaller --onefile -w bot.py")
-    print(os.listdir(os.getcwd()))
-    # shutil.rmtree("./build")
-    # os.remove("./bot.spec")
-    # print(os.getcwd())
-    # shutil.move("dist/bot.exe",'bot.exe')
-    # shutil.rmtree("dist")
-    # os.system("bot.exe")
-    # sys.exit(1)
+    os.system("pyinstaller -w -F bot.py")
+    shutil.rmtree("./build")
+    os.remove("./bot.spec")
+
+    _file = [i for i in os.listdir() if os.path.isfile(i) and '.exe' in i]
+    v = str( (re.findall("\d+",_file[0]))[0] )
+    v = str( int(v) + 1 )
+
+    os.rename("./dist/bot.exe","./dist/bot"+v+".exe")
+    shutil.move("dist/bot"+v+".exe",'.')
+
+    subprocess.Popen("bot"+v+".exe", shell=True)
+
+    shutil.rmtree("./dist")
 
     await ctx.send("Update complete.")
+    sys.exit(1)
+
+
+@bot.command(name='test', help='test')
+async def shutdown(ctx):
+    if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
+    await ctx.send("Update.")
 
 @bot.command(name='dice', aliases=['d'], help='Lance des dés [n°dés]d[n°faces]')
 async def dice(ctx,dice:str):
@@ -422,9 +446,13 @@ async def dice(ctx,dice:str):
 
 @bot.command(name="report", help="Use for report bug or way of improvements.")
 async def report(ctx, *message:str):
+    me = int(ME)
+    me = await bot.fetch_user(me)
     date = datetime.now()
     message = " ".join(message)
-    message = str(date) + " : " + message + "\n"
+    message = str(date) + " : " + message
+    await me.send(ctx.author.name + " : " + message)
+    message = message  + "\n"
     message = message.encode("UTF-8")
     with open("D:/perso/discordBot/jdr v3/report.txt",'ab') as f: f.write(message)
     await ctx.send("Votre rapport a bien été enregistré, merci.")
@@ -433,6 +461,7 @@ async def report(ctx, *message:str):
 async def on_ready():
     print('Connected to Discord!')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,name='/h for help'))
+    clean()
 
 # gestion de toutes les erreurs
 @bot.event
