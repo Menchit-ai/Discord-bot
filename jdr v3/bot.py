@@ -2,6 +2,7 @@
 import os
 import shutil
 import pathlib
+import sys
 
 import random
 from datetime import datetime
@@ -132,6 +133,7 @@ async def create_character(ctx, name:str):
         c = carac[i]
         await ctx.send(c + " : ")
         msg = await bot.wait_for('message', check=check(ctx.author),timeout=30)
+        await msg.add_reaction('👍')
         if not msg.author.name == user : continue
         try: 
             msg = int(msg.content)
@@ -259,7 +261,7 @@ async def change_system(ctx, newstate:str, option:str=None):
     user = get_user(ctx)
     guild = get_guild(ctx)
     
-    if option is "c":
+    if option == "c":
         if newstate in systems: await ctx.send(newstate + " est déjà présent dans les systèmes utilisables !");return
         
         config["sys"][newstate] = {"carac_system":[], "characters":{}}
@@ -272,7 +274,7 @@ async def change_system(ctx, newstate:str, option:str=None):
     try : newstate = spell.correction(newstate)
     except : pass
 
-    if option is "d":
+    if option == "d":
         # if not ctx.author.has_permissions() : await ctx.send("Vous n'avez pas la permission de supprimer des systèmes."); return
         if newstate not in systems : await ctx.send(newstate + " ne fait pas partie de la liste."); return
         
@@ -377,7 +379,7 @@ async def lilroll(ctx):
 
 @bot.command(name='shutdown', aliases=['sd','quit'], help='Termine le bot.')
 async def shutdown(ctx):
-    if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'arrêter le bot."); return
+    if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
     try:
         await ctx.voice_client.disconnect()
     except:
@@ -387,6 +389,23 @@ async def shutdown(ctx):
     await bot.change_presence(status=discord.Status.offline)
     print("Bot closed")
     sys.exit(1)
+
+@bot.command(name='update', help='Met le bot à jour (WIP).')
+async def shutdown(ctx):
+    if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
+
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    os.system("pyinstaller --onefile -w bot.py")
+    print(os.listdir(os.getcwd()))
+    # shutil.rmtree("./build")
+    # os.remove("./bot.spec")
+    # print(os.getcwd())
+    # shutil.move("dist/bot.exe",'bot.exe')
+    # shutil.rmtree("dist")
+    # os.system("bot.exe")
+    # sys.exit(1)
+
+    await ctx.send("Update complete.")
 
 @bot.command(name='dice', aliases=['d'], help='Lance des dés [n°dés]d[n°faces]')
 async def dice(ctx,dice:str):

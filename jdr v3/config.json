@@ -1,9 +1,13 @@
 {
   "curr_sys": {
-    "JDR": null, 
-    "Strat": "test"
+    "JDR": "test", 
+    "Strat": "TFTL"
   }, 
   "sys": {
+    "TFTL": {
+      "carac_system": [], 
+      "characters": {}
+    }, 
     "stars": {
       "carac_system": [], 
       "characters": {}
@@ -36,9 +40,19 @@
               "boire": 1, 
               "dormir": 99, 
               "manger": 50
+            }, 
+            "essai": {
+              "boire": 45, 
+              "dormir": 65, 
+              "manger": 32
+            }, 
+            "essai2": {
+              "boire": 45, 
+              "dormir": 65, 
+              "manger": 32
             }
           }, 
-          "curr_character": "Lui"
+          "curr_character": "Menchrof"
         }
       }
     }
