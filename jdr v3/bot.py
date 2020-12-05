@@ -32,10 +32,16 @@ def get_config():
 def clean():
     #put the ancient exe in an another folder
     _file = [i for i in os.listdir() if os.path.isfile(i) and '.exe' in i]
+    if len(_file) == 1:return
     v = [int(re.findall("\d+",i)[0]) for i in _file]
     curr_v = max(v)
     v = [i for i in v if i < curr_v]
     v = ["bot"+str(i)+".exe" for i in v]
+    shutil.move(v[-1], "backup/backup_bot.exe")
+    shutil.copy("config.json","backup/backup_config.json")
+    shutil.copy("help.json","backup/backup_help.json")
+    del v[-1]
+    if len(v) == 0 : return
     for f in v:
         os.remove(f)
 
@@ -407,7 +413,7 @@ async def shutdown(ctx):
 async def shutdown(ctx):
     if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
 
-    os.system("pyinstaller -w -F bot.py")
+    os.system("pyinstaller --noconsole -w -F bot.py")
     shutil.rmtree("./build")
     os.remove("./bot.spec")
 
@@ -429,7 +435,7 @@ async def shutdown(ctx):
 @bot.command(name='test', help='test')
 async def shutdown(ctx):
     if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
-    await ctx.send("Update.")
+    await ctx.send("Update v4.")
 
 @bot.command(name='dice', aliases=['d'], help='Lance des dés [n°dés]d[n°faces]')
 async def dice(ctx,dice:str):
@@ -472,6 +478,8 @@ async def on_command_error(ctx, error):
         pass
     else:
         print(error)
-        await ctx.send(error)
+        me = int(ME)
+        me = await bot.fetch_user(me)
+        await me.send(error)
 
 bot.run(TOKEN)
