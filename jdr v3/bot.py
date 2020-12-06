@@ -47,7 +47,7 @@ def clean():
 
 def update(data):
     with open(PATH,'w') as json_file:
-        try: json.dump(data,json_file,indent=2, separators=(', ',': '), sort_keys=True)
+        try: json.dump(data,json_file,indent=2, separators=(', ',': '), sort_keys=True, ensure_ascii=False)
         except: return -1
     return 1
 
@@ -429,7 +429,7 @@ async def shutdown(ctx):
     print("Bot closed")
     sys.exit(1)
 
-@bot.command(name='update', help='Met le bot à jour (WIP).')
+@bot.command(name='update', help='Met le bot à jour.')
 async def shutdown(ctx):
     if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
 
