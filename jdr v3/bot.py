@@ -311,7 +311,7 @@ async def change_system(ctx, newstate:str, option:str=None):
     except : pass
 
     if option == "d":
-        # if not ctx.author.has_permissions() : await ctx.send("Vous n'avez pas la permission de supprimer des systèmes."); return
+        if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
         if newstate not in systems : await ctx.send(newstate + " ne fait pas partie de la liste."); return
         
         del config["sys"][newstate]
@@ -482,6 +482,22 @@ async def report(ctx, *message:str):
     message = message.encode("UTF-8")
     with open("D:/perso/discordBot/jdr v3/report.txt",'ab') as f: f.write(message)
     await ctx.send("Votre rapport a bien été enregistré, merci.")
+
+@bot.command(name="backup", help="Restore the previous version of the exe")
+async def backup(ctx):
+    if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
+    shutil.copy("backup/backup_bot.exe","./backup_bot.exe")
+    _file = [i for i in os.listdir() if os.path.isfile(i) and '.exe' in i and not 'backup' in i]
+    print("#########")
+    v = str( (re.findall("\d+",_file[0]))[0] )
+    v = str( int(v) + 1 )
+
+    os.rename("./backup_bot.exe","./bot"+v+".exe")
+    subprocess.Popen("bot"+v+".exe", shell=True)
+    await ctx.send("Backup complete.")
+
+    sys.exit(1)
+
 
 @bot.event
 async def on_ready():
