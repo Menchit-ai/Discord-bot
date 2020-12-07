@@ -2,3 +2,8 @@
 2020-12-05 15:12:46.141860 : ceci est un test
 2020-12-05 15:57:56.041028 : système à xd6, réussite => au moins un 6 dans le tirage, nb de dés = somme de 2 caractéristiques
 2020-12-05 15:59:58.013916 : 4 attributs (Physique, Intellignece, Technique, Coeur)
+2020-12-07 11:03:02.827291 : grand fan
+2020-12-07 11:12:33.436044 : pour la commande /d ajouter une interface graphique plus lisible
+2020-12-07 11:12:49.367462 : faire une commande up pour savoir si le bot est up
+2020-12-07 11:17:35.829736 : commande pour voir les caracs de quelqu'un d'autre
+2020-12-07 11:20:53.824178 : faire une commande /h adaptable pour obtenir l'aide pour une seule fonction

@@ -1,5 +1,6 @@
 # bot.py
 import os
+import time
 import re
 import subprocess
 import shutil
@@ -17,7 +18,7 @@ from discord.ext import commands
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 ME = os.getenv('DISCORD_ID_ME')
-PATH = "D:\perso\discordBot\jdr v3\config.json"
+PATH = "D:/perso/discordBot/jdr release/config.json"
 
 client = discord.Client()
 bot = commands.Bot(command_prefix='/')
@@ -28,22 +29,6 @@ def get_config():
         try: data = json.load(json_file)
         except: return -1
     return data
-
-def clean():
-    #put the ancient exe in an another folder and clear the main folder
-    _file = [i for i in os.listdir() if os.path.isfile(i) and '.exe' in i]
-    if len(_file) == 1:return
-    v = [int(re.findall("\d+",i)[0]) for i in _file]
-    curr_v = v = int( (re.findall("bot(\d+).exe",os.path.basename(__file__)))[0] )
-    v = [i for i in v if i < curr_v]
-    v = ["bot"+str(i)+".exe" for i in v]
-    shutil.move(v[-1], "backup/backup_bot.exe")
-    shutil.copy("config.json","backup/backup_config.json")
-    shutil.copy("help.json","backup/backup_help.json")
-    del v[-1]
-    if len(v) == 0 : return
-    for f in v:
-        os.remove(f)
 
 def update(data):
     with open(PATH,'w') as json_file:
@@ -131,6 +116,27 @@ async def rollTFTL(ctx,config,user,character,system,test):
         result = [str(i) for i in result]
         await ctx.send("Lancés : " + " ".join(result) + "\n" + "Echec !")
 
+async def mpme(message):
+    me = await bot.fetch_user(int(ME))
+    await me.send(message)
+
+
+async def clean():
+    # put the ancient exe in an another folder and clear the main folder
+    _file = [i for i in os.listdir() if os.path.isfile(i) and '.exe' in i]
+
+    v = [re.search("\d+",i) for i in _file]
+    v = sorted([int(i.group()) for i in v if i is not None and int(i.group())])
+    curr_v = v[-1]
+    del v[-1]
+    v = ["bot"+str(i)+".exe" for i in v]
+
+    shutil.copy(v[-1], "backup/backup_bot.exe")
+    shutil.copy("config.json","backup/backup_config.json")
+    shutil.copy("help.json","backup/backup_help.json")
+
+    for f in v:
+        os.remove(f)
 # toutes les commandes disponibles avec le bot
 
 @bot.command(name='createc', aliases=['cc'], help="Commande pour créer son personnage, alias : cc.")
@@ -437,8 +443,10 @@ async def update_bot(ctx):
     shutil.rmtree("./build")
     os.remove("./bot.spec")
 
-    v = str( (re.findall("bot\d+.exe",os.path.basename(__file__)))[0] )
-    v = str( int(v) + 1 )
+    _file = [i for i in os.listdir() if os.path.isfile(i) and '.exe' in i]
+    v = [re.search("\d+",i) for i in _file]
+    v = sorted([int(i.group()) for i in v if i is not None and int(i.group())])
+    v = str(v[-1] +1)
 
     os.rename("./dist/bot.exe","./dist/bot"+v+".exe")
     shutil.move("dist/bot"+v+".exe",'.')
@@ -447,16 +455,14 @@ async def update_bot(ctx):
 
     shutil.rmtree("./dist")
 
-    #shutil.copy("./bot"+v+".exe","./startup.exe")
-
     await ctx.send("Update complete.")
-    sys.exit(1)
+
+    sys.exit()
 
 
-@bot.command(name='test', help='test')
+@bot.command(name='up', help='test')
 async def shutdown(ctx):
-    if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
-    await ctx.send("Update v4.")
+    await ctx.send("Je suis up.")
 
 @bot.command(name='dice', aliases=['d'], help='Lance des dés [n°dés]d[n°faces]')
 async def dice(ctx,dice:str):
@@ -473,15 +479,13 @@ async def dice(ctx,dice:str):
 
 @bot.command(name="report", help="Use for report bug or way of improvements.")
 async def report(ctx, *message:str):
-    me = int(ME)
-    me = await bot.fetch_user(me)
     date = datetime.now()
     message = " ".join(message)
     message = str(date) + " : " + message
-    await me.send(ctx.author.name + " : " + message)
+    await mpme(ctx.author.name + " : " + message)
     message = message  + "\n"
     message = message.encode("UTF-8")
-    with open("D:/perso/discordBot/jdr v3/report.txt",'ab') as f: f.write(message)
+    with open("D:/perso/discordBot/jdr release/report.txt",'ab') as f: f.write(message)
     await ctx.send("Votre rapport a bien été enregistré, merci.")
 
 @bot.command(name="backup", help="Restore the previous version of the exe")
@@ -502,9 +506,10 @@ async def backup(ctx):
 
 @bot.event
 async def on_ready():
+    time.sleep(10)
     print('Connected to Discord!')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,name='/h for help'))
-    clean()
+    await clean()
 
 # gestion de toutes les erreurs
 @bot.event
@@ -515,12 +520,7 @@ async def on_command_error(ctx, error):
         pass
     else:
         print(error)
-        me = int(ME)
-        me = await bot.fetch_user(me)
-        await me.send(error)
+        await mpme(error)
 
 
-try : bot.run(TOKEN)
-except :
-    time.sleep(300)
-    bot.run(TOKEN)
+bot.run(TOKEN)

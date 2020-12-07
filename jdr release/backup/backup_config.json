@@ -1,7 +1,7 @@
 {
   "curr_sys": {
     "JDR": "test", 
-    "Strat": "TFTL"
+    "Strat": "test"
   }, 
   "sys": {
     "TFTL": {
@@ -10,38 +10,38 @@
         "intelligence", 
         "technique", 
         "coeur", 
-        "agilit\u00e9", 
+        "agilité", 
         "force", 
-        "furtivit\u00e9", 
-        "compr\u00e9hension", 
-        "d\u00e9couverte", 
+        "furtivité", 
+        "compréhension", 
+        "découverte", 
         "empathie", 
         "analyse", 
         "bricolage", 
         "programmation", 
         "charisme", 
         "charme", 
-        "r\u00e9seau"
+        "réseau"
       ], 
       "characters": {
         "Menchrof": {
           "characters": {
             "test": {
-              "agilit\u00e9": 6, 
+              "agilité": 6, 
               "analyse": 3, 
               "bricolage": 2, 
               "charisme": 3, 
               "charme": 2, 
               "coeur": 5, 
-              "compr\u00e9hension": 7, 
-              "d\u00e9couverte": 6, 
+              "compréhension": 7, 
+              "découverte": 6, 
               "empathie": 5, 
               "force": 9, 
-              "furtivit\u00e9": 8, 
+              "furtivité": 8, 
               "intelligence": 1, 
               "physique": 4, 
               "programmation": 3, 
-              "r\u00e9seau": 3, 
+              "réseau": 3, 
               "technique": 3
             }
           }, 
@@ -94,6 +94,16 @@
             }
           }, 
           "curr_character": "Menchrof"
+        }, 
+        "SQuiich": {
+          "characters": {
+            "moi": {
+              "boire": 100, 
+              "dormir": 100, 
+              "manger": 100
+            }
+          }, 
+          "curr_character": "moi"
         }
       }
     }
