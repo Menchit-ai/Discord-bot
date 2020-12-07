@@ -1,4 +1,0 @@
-2020-12-05 15:11:07.792651 : ceci est un test
-2020-12-05 15:12:46.141860 : ceci est un test
-2020-12-05 15:57:56.041028 : système à xd6, réussite => au moins un 6 dans le tirage, nb de dés = somme de 2 caractéristiques
-2020-12-05 15:59:58.013916 : 4 attributs (Physique, Intellignece, Technique, Coeur)
