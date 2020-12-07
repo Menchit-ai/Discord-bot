@@ -1,4 +1,3 @@
-# bot.py
 import os
 import time
 import re
@@ -7,6 +6,8 @@ import shutil
 import pathlib
 import sys
 
+import nacl
+
 import random
 from datetime import datetime
 import json
@@ -14,7 +15,6 @@ from spellchecker import SpellChecker
 
 import discord
 from discord.ext import commands
-
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 ME = os.getenv('DISCORD_ID_ME')
@@ -32,7 +32,7 @@ def get_config():
 
 def update(data):
     with open(PATH,'w') as json_file:
-        try: json.dump(data,json_file,indent=2, separators=(', ',': '), sort_keys=True, ensure_ascii=False)
+        try: json.dump(data,json_file,indent=2, separators=(', ',': '), sort_keys=True, ensure_ascii=True)
         except: return -1
     return 1
 
@@ -53,8 +53,8 @@ async def play(ctx,path):
 
         vc.play(discord.FFmpegPCMAudio(path))
         vc.is_playing()
-    except:
-        pass
+    except RuntimeError as e:
+        await mpme(e)
 
 def spellcheck(words):
     spell = SpellChecker(language=None)
@@ -120,27 +120,20 @@ async def mpme(message):
     me = await bot.fetch_user(int(ME))
     await me.send(message)
 
+async def quitter(ctx):
+    try:
+        await ctx.voice_client.disconnect()
+    except:
+        pass
+    await client.close()
+    await bot.change_presence(status=discord.Status.offline)
 
-async def clean():
-    # put the ancient exe in an another folder and clear the main folder
-    _file = [i for i in os.listdir() if os.path.isfile(i) and '.exe' in i]
 
-    v = [re.search("\d+",i) for i in _file]
-    v = sorted([int(i.group()) for i in v if i is not None and int(i.group())])
-    curr_v = v[-1]
-    del v[-1]
-    v = ["bot"+str(i)+".exe" for i in v]
-
-    shutil.copy(v[-1], "backup/backup_bot.exe")
-    shutil.copy("config.json","backup/backup_config.json")
-    shutil.copy("help.json","backup/backup_help.json")
-
-    for f in v:
-        os.remove(f)
 # toutes les commandes disponibles avec le bot
 
 @bot.command(name='createc', aliases=['cc'], help="Commande pour créer son personnage, alias : cc.")
-async def create_character(ctx, name:str):
+async def create_character(ctx, *name:str):
+    if len(name) > 1 : name = " ".join(name)
     system = get_system(ctx)
     user = get_user(ctx)
     if system is None : await ctx.send("Le serveur n'utilise actuellement aucun système, choisissez-en un !"); return
@@ -196,6 +189,7 @@ async def create_character(ctx, name:str):
     await ctx.send("\nLe personnage {} a bien été créé pour le joueur {}.".format(name,user))
     await ctx.send(show_stat)
 
+
 @bot.command(name="set_caracteristic", aliases=['setc'], help="Modifie la valeur d'une caractéristique du personnage courant, l'ajoute si elle n'existe pas, alias : setc.")
 async def set_caracteristic(ctx, carac:str, value:int):
     
@@ -213,9 +207,10 @@ async def set_caracteristic(ctx, carac:str, value:int):
 
     update(config)
     await ctx.send("Le personnage " + character + " a maintenant " + str(value) + " en carac.")
-
+    
 @bot.command(name='choose_character', aliases=['cch'], help="Permet à un joueur de choisir le personnage qu'il souhaite utiliser dans le système courant, alias : cch.")
-async def funcname(ctx, character:str):
+async def choose_character(ctx, *character:str):
+    if len(character) > 1 : character = " ".join(character)
     system = get_system(ctx)
     if system is None : await ctx.send("Choisissez un système."); return
     config = get_config()
@@ -286,14 +281,19 @@ async def show_carac(ctx):
     await ctx.send("Le système " + system + " possède les caractéristiques suivantes : " + ", ".join(caracteristics))
 
 @bot.command(name="h", help="Affiche les aides des commandes")
-async def h(ctx):
+async def h(ctx, option:str="g"):
     text = {}
     with open("./help.json",'r') as json_file : text = json.load(json_file)
     embed = discord.Embed(title= "Aide sur les commandes")
-    for key,value in text.items():
+
+    for key,value in text["main"].items():
         embed.add_field(name=key, value=value, inline=False)
 
-    await ctx.send(embed=embed)
+    msg = await ctx.send(embed=embed)
+
+    await msg.add_reaction('1️⃣')
+    await msg.add_reaction('2️⃣')
+    await msg.add_reaction('3️⃣')
 
 @bot.command(name='system', aliases=['sys'], help='Permet de définir le système de jeu utilisé dans tout le serveur Discord. option : c (nouveau système)')
 async def change_system(ctx, newstate:str, option:str=None):
@@ -381,7 +381,7 @@ async def lilroll(ctx, test: str, mod: int=0):
     if system is None : await ctx.send("Vous n'utilisez actuellement aucun système de jeu."); return
 
     test = test.lower()
-    print("test in")
+
     if system == "TFTL" : await rollTFTL(ctx,config,user,character,system,test); return
 
     carac = config["sys"][system]["characters"][user]["characters"][character]  
@@ -425,38 +425,18 @@ async def lilroll(ctx):
 @bot.command(name='shutdown', aliases=['sd','quit'], help='Termine le bot.')
 async def shutdown(ctx):
     if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
-    try:
-        await ctx.voice_client.disconnect()
-    except:
-        pass
-    await client.close()
-    await ctx.send("Shutdown")
-    await bot.change_presence(status=discord.Status.offline)
-    print("Bot closed")
+    await quitter(ctx)
     sys.exit(1)
 
 @bot.command(name='update', help='Met le bot à jour.')
 async def update_bot(ctx):
     if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
 
-    os.system("pyinstaller --noconsole -w -F bot.py")
-    shutil.rmtree("./build")
-    os.remove("./bot.spec")
+    shutil.copy("./config.json","./backup/backup_config.json")
 
-    _file = [i for i in os.listdir() if os.path.isfile(i) and '.exe' in i]
-    v = [re.search("\d+",i) for i in _file]
-    v = sorted([int(i.group()) for i in v if i is not None and int(i.group())])
-    v = str(v[-1] +1)
-
-    os.rename("./dist/bot.exe","./dist/bot"+v+".exe")
-    shutil.move("dist/bot"+v+".exe",'.')
-
-    subprocess.Popen("bot"+v+".exe", shell=True)
-
-    shutil.rmtree("./dist")
-
-    await ctx.send("Update complete.")
-
+    subprocess.Popen("main.exe", shell=True)
+    await ctx.send("Redémarrage.")
+    await quitter(ctx)
     sys.exit()
 
 
@@ -488,28 +468,47 @@ async def report(ctx, *message:str):
     with open("D:/perso/discordBot/jdr release/report.txt",'ab') as f: f.write(message)
     await ctx.send("Votre rapport a bien été enregistré, merci.")
 
-@bot.command(name="backup", help="Restore the previous version of the exe")
-async def backup(ctx):
-    if not ctx.author.name == "Menchrof" : await ctx.send("Vous n'avez pas la permission d'effectuer cette commande."); return
-    shutil.copy("backup/backup_bot.exe","./backup_bot.exe")
-    _file = [i for i in os.listdir() if os.path.isfile(i) and '.exe' in i and not 'backup' in i]
-    print("#########")
-    v = str( (re.findall("\d+",_file[0]))[0] )
-    v = str( int(v) + 1 )
-
-    os.rename("./backup_bot.exe","./bot"+v+".exe")
-    subprocess.Popen("bot"+v+".exe", shell=True)
-    await ctx.send("Backup complete.")
-
-    sys.exit(1)
-
+@bot.command(name="disconnect", help="disconnect from voice channel")
+async def disconnect(ctx):
+    try:
+        await ctx.voice_client.disconnect()
+    except:
+        pass
 
 @bot.event
 async def on_ready():
-    time.sleep(10)
+    time.sleep(1)
     print('Connected to Discord!')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,name='/h for help'))
-    await clean()
+
+@bot.event
+async def on_reaction_add(reaction,user):
+    if reaction.emoji == '1️⃣' and not user.id == 778899886087077909:
+        text = {}
+        with open("./help.json",'r') as json_file : text = json.load(json_file)
+
+        embed = discord.Embed(title= "Comment créer son personnage ?")
+        for key,value in text["create_character"].items():
+            embed.add_field(name=key, value=value, inline=False)
+
+        await reaction.message.edit(embed=embed)
+
+    elif reaction.emoji == '2️⃣' and not user.id == 778899886087077909:
+        text = {}
+        with open("./help.json",'r') as json_file : text = json.load(json_file)
+
+        embed = discord.Embed(title= "Comment créer son propre système ?")
+        for key,value in text["create_system"].items():
+            embed.add_field(name=key, value=value, inline=False)
+        await reaction.message.edit(embed=embed)
+    elif reaction.emoji == '3️⃣' and not user.id == 778899886087077909:
+        text = {}
+        with open("./help.json",'r') as json_file : text = json.load(json_file)
+
+        embed = discord.Embed(title= "Informations générales")
+        for key,value in text["miscelanous"].items():
+            embed.add_field(name=key, value=value, inline=False)
+        await reaction.message.edit(embed=embed)
 
 # gestion de toutes les erreurs
 @bot.event
@@ -517,10 +516,10 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You do not have the correct role for this command.')
     elif isinstance(error,commands.errors.ClientException):
-        pass
+        await ctx.send(error)
     else:
         print(error)
-        await mpme(error)
+        await ctx.send(error)
 
 
 bot.run(TOKEN)

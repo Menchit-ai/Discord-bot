@@ -10,38 +10,38 @@
         "intelligence", 
         "technique", 
         "coeur", 
-        "agilité", 
+        "agilit\u00e9", 
         "force", 
-        "furtivité", 
-        "compréhension", 
-        "découverte", 
+        "furtivit\u00e9", 
+        "compr\u00e9hension", 
+        "d\u00e9couverte", 
         "empathie", 
         "analyse", 
         "bricolage", 
         "programmation", 
         "charisme", 
         "charme", 
-        "réseau"
+        "r\u00e9seau"
       ], 
       "characters": {
         "Menchrof": {
           "characters": {
             "test": {
-              "agilité": 6, 
+              "agilit\u00e9": 6, 
               "analyse": 3, 
               "bricolage": 2, 
               "charisme": 3, 
               "charme": 2, 
               "coeur": 5, 
-              "compréhension": 7, 
-              "découverte": 6, 
+              "compr\u00e9hension": 7, 
+              "d\u00e9couverte": 6, 
               "empathie": 5, 
               "force": 9, 
-              "furtivité": 8, 
+              "furtivit\u00e9": 8, 
               "intelligence": 1, 
               "physique": 4, 
               "programmation": 3, 
-              "réseau": 3, 
+              "r\u00e9seau": 3, 
               "technique": 3
             }
           }, 
@@ -91,9 +91,34 @@
               "boire": 45, 
               "dormir": 65, 
               "manger": 32
+            }, 
+            "jksjd ouif": {
+              "boire": 65, 
+              "dormir": 32, 
+              "manger": 45
+            }, 
+            "test 65": {
+              "boire": 56, 
+              "dormir": 32, 
+              "manger": 41
+            }, 
+            "test25": {
+              "boire": 2, 
+              "dormir": 1, 
+              "manger": 3
+            }, 
+            "test32": {
+              "boire": 25, 
+              "dormir": 65, 
+              "manger": 23
+            }, 
+            "test56": {
+              "boire": 23, 
+              "dormir": 32, 
+              "manger": 25
             }
           }, 
-          "curr_character": "Menchrof"
+          "curr_character": "test 65"
         }, 
         "SQuiich": {
           "characters": {
@@ -104,6 +129,16 @@
             }
           }, 
           "curr_character": "moi"
+        }, 
+        "Theo_Guerrois": {
+          "characters": {
+            "Bebou": {
+              "boire": 8, 
+              "dormir": 8, 
+              "manger": 100
+            }
+          }, 
+          "curr_character": "Bebou"
         }
       }
     }

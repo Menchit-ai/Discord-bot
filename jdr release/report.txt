@@ -7,3 +7,6 @@
 2020-12-07 11:12:49.367462 : faire une commande up pour savoir si le bot est up
 2020-12-07 11:17:35.829736 : commande pour voir les caracs de quelqu'un d'autre
 2020-12-07 11:20:53.824178 : faire une commande /h adaptable pour obtenir l'aide pour une seule fonction
+2020-12-07 15:48:21.796417 : quand un personnage est créé le mettre par défaut
+2020-12-07 15:48:38.450896 : pls met un tuto
+2020-12-07 15:48:55.898473 : améliorer l'aide pour la création de système, de personnage, etc...

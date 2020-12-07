@@ -1,15 +1,41 @@
 {
-    "createc" : "permet de creer un personnage a son nom\ncreatec (cc) : /cc [nom_personnage]",
-    "set_caracteristic" : "permet d'ajouter ou de modifier la competence de son personnage courant\nset_caracteristic (setc) : /setc [nom_competence] [valeur]",
-    "choose_character" : "permet de definir un perso comme personnage courant\nchoose_character (cch) : /cch [nom_personnage]",
-    "add_carac" : "permet d'ajouter des caracteristiques de base au systeme courant\nadd_carac (ac) : /ac [carac1] [carac2] [carac3] ....",
-    "rm_carac" : "permet de retirer des caracteristiques de base au systeme courant\nrm_carac (rc) : /rc [carac1] [carac2] [carac3] ....",
-    "show_carac" : "permet de lister les caracteristiques de base au systeme courant\nshow_carac (sc) : /sc",
-    "system" : "permet de creer, supprimer ou definir le systeme courant\nsystem (sys) : /sys [nom_systeme] [option: c|d]  (c: create, d:delete)",
-    "info" : "permet d'avoir des infos generales sur l'utilisateur et le serveur\ninfo (i) : /i",
-    "roll" : "permet de faire un jet sous un competence du perso courant du joueur\nroll (r) : /r [caracteristique] [option: modificateur]",
-    "carac" : "permet d'avoir les caracteristiques du personnage courant\ncarac () : /carac",
-    "d" : "permet de faire un lancer de des\ndice (d): /d [nb des]d[nb faces]",
-    "Important" : "si vous avez des suggestions d'ameliorations ou que vous voulez report un bug, utilisez la commande /report [votre message]",
-    "DISCLAIMER" : "les seuls systemes utilisables sont les systemes d100 (par defaut) et TFTL (pour le systeme TFTL)"
+    "main": {
+        "createc" : "permet de creer un personnage a son nom\ncreatec (cc) : /cc [nom_personnage]",
+        "set_caracteristic" : "permet d'ajouter ou de modifier la competence de son personnage courant\nset_caracteristic (setc) : /setc [nom_competence] [valeur]",
+        "choose_character" : "permet de definir un perso comme personnage courant\nchoose_character (cch) : /cch [nom_personnage]",
+        "add_carac" : "permet d'ajouter des caracteristiques de base au systeme courant\nadd_carac (ac) : /ac [carac1] [carac2] [carac3] ....",
+        "rm_carac" : "permet de retirer des caracteristiques de base au systeme courant\nrm_carac (rc) : /rc [carac1] [carac2] [carac3] ....",
+        "show_carac" : "permet de lister les caracteristiques de base au systeme courant\nshow_carac (sc) : /sc",
+        "system" : "permet de creer, supprimer ou definir le systeme courant\nsystem (sys) : /sys [nom_systeme] [option: c|d]  (c: create, d:delete)",
+        "info" : "permet d'avoir des infos generales sur l'utilisateur et le serveur\ninfo (i) : /i",
+        "roll" : "permet de faire un jet sous un competence du perso courant du joueur\nroll (r) : /r [caracteristique] [option: modificateur]",
+        "carac" : "permet d'avoir les caracteristiques du personnage courant\ncarac () : /carac",
+        "d" : "permet de faire un lancer de des\ndice (d): /d [nb des]d[nb faces]",
+        "Important" : "si vous avez des suggestions d'ameliorations ou que vous voulez report un bug, utilisez la commande /report [votre message]",
+        "DISCLAIMER" : "les seuls systemes utilisables sont les systemes d100 (par defaut) et TFTL (pour le systeme TFTL)",
+        "Precision" : "Si vous voulez avoir une aide plus poussee sur une fonctionnalite cliquez sur les reactions :\n1 : tuto creation personnage\n2 : tuto creation d'un systeme\n3 : infos generales"
+    },
+    "create_character" : {
+        "1" : "Chaque personnage est propre a un systeme, verifiez donc d etre dans le bon systeme. Pour voir dans quel systeme vous vous trouvez, vous pouvez taper /i, pour selectionner un systeme, taper /sys [nom du systeme]",
+        "2" : "Maintenant que vous etes dans le bon systeme, vous pouvez creer votre personnage en tapant /cc [nom du personnage]. Vous devrez ensuite rentrer vos caracteristiques en ecrivant simplement la valeur de chacune lorsque le bot vous la demande.",
+        "3" : "Si vous voulez ajouter des caracteristiques a votre personnage vous pouvez utiliser la commande setc en tapant /setc [nom competence] [valeur]. Cette commande vous permet de modifier la valeur d une caracteristique deja existante ou d en ajouter une.",
+        "4" : "Enfin, il vous faut maintenant definir le personnage comme personnage utilise, pour ce faire, taper /cch [nom personnage]."
+    },
+    "create_system" : {
+        "1" : "Utiliser la commande /sys [nom du systeme] c pour creer votre systeme, le caractere c permet d indiquer que c est une creation.",
+        "2" : "Il faut utiliser ce systeme pour pouvoir le modifier, taper /sys [nom du systeme].",
+        "3" : "Vous pouvez maintenant definir les caracteristique generiques de votre systeme. Ces caracteristiques seront communes a tous les personnages et en faire une liste exhaustive peut permettre une creation de personnage plus rapide.",
+        "ajout" : "pour ajouter une caracteristique utiliser la commande /ac [carac1] [carac2] ... Vous pouvez ajouter autant que caracteristiques que vous voulez en une seule fois, par contre vous ne pouvez pas utiliser des espaces dans vos noms de capacites, utilisez des _ .",
+        "suppression" : "pour supprimer des caracteristiques, la commande fonctionne de la meme maniere que pour les ajouter mais la commande se nomme rc : /rc [carac1] [carac2]...",
+        "4" : "Vous pouvez a tous moments utiliser la commande /sc pour voir toutes les caracteristiques de votre systeme.",
+        "Attention" : "Un serveur ne peut utiliser qu un seul systeme a la fois !"
+    },
+    "miscelanous" : {
+        "Voir ses caracteristiques" : "si vous voulez voir les caracterstiques de votre personnage courant, taper /sch",
+        "Infos generales" : "la commande /i vous permet d avoir des informations generales comme le systeme utilise dans le serveur ainsi que votre personnage courant.",
+        "Jet de des standard" : "Pour lancer des des taper la commande /d [nb des]d[nb faces] attention a ne pas mettre d espace entre les nombres et la lettre d separant ceux ci.",
+        "Test de caracteristique" : "Pour effectuer un jet en utilisant une caracteristique de votre personnage utiliser la commande /r [nom de la caracteristique] [modificateur] ce modificateur peut etre un nombre entier positif ou negatif qui va impacter le jet (bonus, malus)",
+        "Systeme d100 and co." : "Un systeme nouvellement creer utiliser un systeme d100 (les caracteristique vont de 1 a 100 et il faut faire un nombre inferieur a la valeur de sa caracteristique avec un d100). Pour utiliser de nouveaux systemes de jeux, creer votre systeme et utilisez ensuite la commande /report [votre message] en donnant le nom de votre systeme ainsi qu un descriptif ou un lien explicitant celui ci.",
+        "Contact" : "A tous moments vous pouvez utiliser la commande /report [votre message] pour envoyer un commentaire sur le bot, que ce soit pour referencer un bug ou pour faire des suggestions d amelioration."
+    }
 }

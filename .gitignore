@@ -2,3 +2,5 @@ ffmpeg/
 *.env
 __pycache__/
 .vscode/
+nacl/
+PyNaCl-1.4.0.dist-info/
