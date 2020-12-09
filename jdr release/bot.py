@@ -578,7 +578,9 @@ async def on_reaction_add(reaction,user):
 
 @bot.event
 async def on_voice_state_update(member, before, after):
-    if member == await bot.fetch_user(778899886087077909) : return
+    if member == await bot.fetch_user(778899886087077909) : return # self
+    if member == await bot.fetch_user(234395307759108106) : return # groovy
+    if member == await bot.fetch_user(235088799074484224) : return # rythm
     if before.self_mute == False and after.self_mute == True : return
     if before.self_mute == True and after.self_mute == True : return
     try:
