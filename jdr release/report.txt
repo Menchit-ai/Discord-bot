@@ -1,12 +1,3 @@
-2020-12-05 15:11:07.792651 : ceci est un test
-2020-12-05 15:12:46.141860 : ceci est un test
-2020-12-05 15:57:56.041028 : système à xd6, réussite => au moins un 6 dans le tirage, nb de dés = somme de 2 caractéristiques
-2020-12-05 15:59:58.013916 : 4 attributs (Physique, Intellignece, Technique, Coeur)
-2020-12-07 11:03:02.827291 : grand fan
-2020-12-07 11:12:33.436044 : pour la commande /d ajouter une interface graphique plus lisible
-2020-12-07 11:12:49.367462 : faire une commande up pour savoir si le bot est up
 2020-12-07 11:17:35.829736 : commande pour voir les caracs de quelqu'un d'autre
-2020-12-07 11:20:53.824178 : faire une commande /h adaptable pour obtenir l'aide pour une seule fonction
 2020-12-07 15:48:21.796417 : quand un personnage est créé le mettre par défaut
-2020-12-07 15:48:38.450896 : pls met un tuto
-2020-12-07 15:48:55.898473 : améliorer l'aide pour la création de système, de personnage, etc...
+Menchrof : 2020-12-08 18:00:04.814901 : ajout d'une gestion d'inventaire et/ou d'argent

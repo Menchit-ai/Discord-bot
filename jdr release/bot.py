@@ -6,8 +6,6 @@ import shutil
 import pathlib
 import sys
 
-import nacl
-
 import random
 from datetime import datetime
 import json
@@ -52,7 +50,7 @@ async def play(ctx,path):
             await ctx.voice_client.disconnect()
             vc = await ctx.author.voice.channel.connect()
         else:
-            vc = ctx.voice_client    
+            vc = ctx.voice_client
 
         vc.play(discord.FFmpegPCMAudio(path))
         vc.is_playing()
@@ -109,6 +107,9 @@ def get_all_character(ctx):
     user = get_user(ctx)
     try : return list(config["sys"][system]["characters"][user]["characters"].keys())
     except : return None
+
+def get_voice_channel(ctx):
+    return ctx.voice_client
 
 async def rollTFTL(ctx,config,user,character,system,test):
     # fait un jet de dés en utilisant une compétence
@@ -509,6 +510,23 @@ async def report(ctx, *message:str):
     with open("D:/perso/discordBot/jdr release/report.txt",'ab') as f: f.write(message)
     await ctx.send("Votre rapport a bien été enregistré, merci.")
 
+@bot.command(name="connect", help="connect to a voice channel")
+async def connect(ctx):
+    # connecte le bot à une éventuelle channel vocale
+    voice_channel = ctx.author.voice
+    if voice_channel is None: await ctx.send("Vous n'êtes pas dans un channel audio."); return
+    vc = None
+
+
+    if (ctx.me.voice is None): 
+        vc = await ctx.author.voice.channel.connect()
+    elif ctx.author.voice.channel != ctx.me.voice.channel:
+        await ctx.voice_client.disconnect()
+        vc = await ctx.author.voice.channel.connect()
+    else:
+        vc = ctx.voice_client
+
+
 @bot.command(name="disconnect", help="disconnect from voice channel")
 async def disconnect(ctx):
     # déconnecte le bot d'une éventuelle channel vocale
@@ -557,6 +575,37 @@ async def on_reaction_add(reaction,user):
         for key,value in text["miscelanous"].items():
             embed.add_field(name=key, value=value, inline=False)
         await reaction.message.edit(embed=embed)
+
+@bot.event
+async def on_voice_state_update(member, before, after):
+    if member == await bot.fetch_user(778899886087077909) : return
+    if before.self_mute == False and after.self_mute == True : return
+    if before.self_mute == True and after.self_mute == True : return
+    try:
+        vc = await after.channel.connect()
+        if   member ==  await bot.fetch_user(153158340799627265) : vc.play(discord.FFmpegPCMAudio("./data_sound/snk.mp3"))              # squiich
+        elif member ==  await bot.fetch_user(171623518772002816) : vc.play(discord.FFmpegPCMAudio("./data_sound/tu-tu-ru.mp3"))         # panda
+        elif member ==  await bot.fetch_user(311977846757392384) : vc.play(discord.FFmpegPCMAudio("./data_sound/chicken.mp3"))          # chicky
+        elif member ==  await bot.fetch_user(234016737048264704) : vc.play(discord.FFmpegPCMAudio("./data_sound/ouii.mp3"))             # menchrof
+        elif member ==  await bot.fetch_user(226369729093304320) : vc.play(discord.FFmpegPCMAudio("./data_sound/10_MILLIONS.mp3"))      # sasuke
+        elif member ==  await bot.fetch_user(224231591763902464) : vc.play(discord.FFmpegPCMAudio("./data_sound/prince-charmant.mp3"))  # chevalier
+        elif member ==  await bot.fetch_user(234391398441287680) : vc.play(discord.FFmpegPCMAudio("./data_sound/poubelle.mp3"))         # constantin
+        elif member ==  await bot.fetch_user(466669390008549390) : vc.play(discord.FFmpegPCMAudio("./data_sound/nyctalope.mp3"))        # théo
+        elif member ==  await bot.fetch_user(292348214047408129) : vc.play(discord.FFmpegPCMAudio("./data_sound/ludicolo.mp3"))         # ludicolo
+        elif member ==  await bot.fetch_user(512022174853365770) : vc.play(discord.FFmpegPCMAudio("./data_sound/chipeur.mp3"))          # chippeur
+        elif member ==  await bot.fetch_user(540919479832674334) : vc.play(discord.FFmpegPCMAudio("./data_sound/bresil.mp3"))           # major
+        elif member ==  await bot.fetch_user(208294174909399040) : vc.play(discord.FFmpegPCMAudio("./data_sound/swain.mp3"))            # pierre
+        elif member ==  await bot.fetch_user(540934375810793473) : vc.play(discord.FFmpegPCMAudio("./data_sound/kiwi.mp3"))             # thibaud
+        elif member ==  await bot.fetch_user(290212793678954497) : vc.play(discord.FFmpegPCMAudio("./data_sound/pardon.mp3"))           # maillou
+        elif member ==  await bot.fetch_user(126345523358597120) : vc.play(discord.FFmpegPCMAudio("./data_sound/baby-yoda.mp3"))        # romain do
+        elif member ==  await bot.fetch_user(250295841791672321) : vc.play(discord.FFmpegPCMAudio("./data_sound/yare-yare-daze.mp3"))   # nico
+        else : vc.play(discord.FFmpegPCMAudio("./data_sound/coucou.mp3")) # défaut
+        while vc.is_playing():time.sleep(0.1)
+        await vc.disconnect()
+    except Exception as error:
+        print(error)
+
+
 
 # gestion de toutes les erreurs
 # les erreurs sont envoyées directement dans les channels
