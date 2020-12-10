@@ -14,11 +14,15 @@ from spellchecker import SpellChecker
 import discord
 from discord.ext import commands
 
+intents = discord.Intents.default()
+intents.members = True
+
 TOKEN = os.getenv('DISCORD_TOKEN')
 ME = os.getenv('DISCORD_ID_ME')
 PATH = "D:/perso/discordBot/jdr release/config.json"
 
 client = discord.Client()
+
 bot = commands.Bot(command_prefix='/')
 
 def get_config():
@@ -479,8 +483,13 @@ async def update_bot(ctx):
 
 @bot.command(name='up', help='test')
 async def up(ctx):
-    # commande d'affichage simple
     await ctx.send("Je suis up.")
+    # try:
+    #     await mpme("Users :")
+    #     guild = await client.fetch_guild(671029269597650984)
+    #     members = await guild.fetch_members().flatten()
+    #     await mpme(mebers[:5])
+    # except Exception as e : await mpme(str(e))
 
 @bot.command(name='dice', aliases=['d'], help='Lance des dés [n°dés]d[n°faces]')
 async def dice(ctx,dice:str):
@@ -585,22 +594,22 @@ async def on_voice_state_update(member, before, after):
     if before.self_mute == True and after.self_mute == True : return
     try:
         vc = await after.channel.connect()
-        if   member ==  await bot.fetch_user(153158340799627265) : vc.play(discord.FFmpegPCMAudio("./data_sound/snk.mp3"))              # squiich
-        elif member ==  await bot.fetch_user(171623518772002816) : vc.play(discord.FFmpegPCMAudio("./data_sound/tu-tu-ru.mp3"))         # panda
-        elif member ==  await bot.fetch_user(311977846757392384) : vc.play(discord.FFmpegPCMAudio("./data_sound/chicken.mp3"))          # chicky
-        elif member ==  await bot.fetch_user(234016737048264704) : vc.play(discord.FFmpegPCMAudio("./data_sound/ouii.mp3"))             # menchrof
-        elif member ==  await bot.fetch_user(226369729093304320) : vc.play(discord.FFmpegPCMAudio("./data_sound/10_MILLIONS.mp3"))      # sasuke
-        elif member ==  await bot.fetch_user(224231591763902464) : vc.play(discord.FFmpegPCMAudio("./data_sound/prince-charmant.mp3"))  # chevalier
-        elif member ==  await bot.fetch_user(234391398441287680) : vc.play(discord.FFmpegPCMAudio("./data_sound/poubelle.mp3"))         # constantin
-        elif member ==  await bot.fetch_user(466669390008549390) : vc.play(discord.FFmpegPCMAudio("./data_sound/nyctalope.mp3"))        # théo
-        elif member ==  await bot.fetch_user(292348214047408129) : vc.play(discord.FFmpegPCMAudio("./data_sound/ludicolo.mp3"))         # ludicolo
-        elif member ==  await bot.fetch_user(512022174853365770) : vc.play(discord.FFmpegPCMAudio("./data_sound/chipeur.mp3"))          # chippeur
-        elif member ==  await bot.fetch_user(540919479832674334) : vc.play(discord.FFmpegPCMAudio("./data_sound/bresil.mp3"))           # major
-        elif member ==  await bot.fetch_user(208294174909399040) : vc.play(discord.FFmpegPCMAudio("./data_sound/swain.mp3"))            # pierre
-        elif member ==  await bot.fetch_user(540934375810793473) : vc.play(discord.FFmpegPCMAudio("./data_sound/kiwi.mp3"))             # thibaud
-        elif member ==  await bot.fetch_user(290212793678954497) : vc.play(discord.FFmpegPCMAudio("./data_sound/pardon.mp3"))           # maillou
-        elif member ==  await bot.fetch_user(126345523358597120) : vc.play(discord.FFmpegPCMAudio("./data_sound/baby-yoda.mp3"))        # romain do
-        elif member ==  await bot.fetch_user(250295841791672321) : vc.play(discord.FFmpegPCMAudio("./data_sound/yare-yare-daze.mp3"))   # nico
+        if   member.id ==  171623518772002816 : vc.play(discord.FFmpegPCMAudio("./data_sound/tu-tu-ru.mp3"))         # panda
+        elif member.id ==  153158340799627265 : vc.play(discord.FFmpegPCMAudio("./data_sound/snk.mp3"))              # squiich
+        elif member.id ==  311977846757392384 : vc.play(discord.FFmpegPCMAudio("./data_sound/chicken.mp3"))          # chicky
+        elif member.id ==  226369729093304320 : vc.play(discord.FFmpegPCMAudio("./data_sound/10_MILLIONS.mp3"))      # sasuke
+        elif member.id ==  224231591763902464 : vc.play(discord.FFmpegPCMAudio("./data_sound/prince-charmant.mp3"))  # chevalier
+        elif member.id ==  234391398441287680 : vc.play(discord.FFmpegPCMAudio("./data_sound/poubelle.mp3"))         # constantin
+        elif member.id ==  466669390008549390 : vc.play(discord.FFmpegPCMAudio("./data_sound/nyctalope.mp3"))        # théo
+        elif member.id ==  292348214047408129 : vc.play(discord.FFmpegPCMAudio("./data_sound/ludicolo.mp3"))         # ludicolo
+        elif member.id ==  512022174853365770 : vc.play(discord.FFmpegPCMAudio("./data_sound/chipeur.mp3"))          # chippeur
+        elif member.id ==  540919479832674334 : vc.play(discord.FFmpegPCMAudio("./data_sound/bresil.mp3"))           # major
+        elif member.id ==  208294174909399040 : vc.play(discord.FFmpegPCMAudio("./data_sound/swain.mp3"))            # pierre
+        elif member.id ==  540934375810793473 : vc.play(discord.FFmpegPCMAudio("./data_sound/kiwi.mp3"))             # thibaud
+        elif member.id ==  290212793678954497 : vc.play(discord.FFmpegPCMAudio("./data_sound/pardon.mp3"))           # maillou
+        elif member.id ==  126345523358597120 : vc.play(discord.FFmpegPCMAudio("./data_sound/baby-yoda.mp3"))        # romain do
+        elif member.id ==  250295841791672321 : vc.play(discord.FFmpegPCMAudio("./data_sound/yare-yare-daze.mp3"))   # nico
+        elif member.id ==  234016737048264704 : vc.play(discord.FFmpegPCMAudio("./data_sound/ouii.mp3"))             # menchrof
         else : vc.play(discord.FFmpegPCMAudio("./data_sound/coucou.mp3")) # défaut
         while vc.is_playing():time.sleep(0.1)
         await vc.disconnect()

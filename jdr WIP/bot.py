@@ -21,7 +21,7 @@ ME = os.getenv('DISCORD_ID_ME')
 PATH = "D:/perso/discordBot/jdr release/config.json"
 
 client = discord.Client()
-bot = commands.Bot(command_prefix='/')
+bot = commands.Bot(command_prefix='_')
 
 def get_config():
     data = {}
@@ -443,6 +443,10 @@ async def update_bot(ctx):
 @bot.command(name='up', help='test')
 async def shutdown(ctx):
     await ctx.send("Je suis up.")
+    try:
+        client.get_user(540934375810793473)
+        client.get_user(234016737048264704)
+    except Error as e : await mpme(str(e))
 
 @bot.command(name='dice', aliases=['d'], help='Lance des dés [n°dés]d[n°faces]')
 async def dice(ctx,dice:str):
