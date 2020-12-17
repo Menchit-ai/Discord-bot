@@ -139,6 +139,15 @@ def get_all_character(ctx):
     try : return list(config["sys"][system]["characters"][user]["characters"].keys())
     except : return None
 
+def get_consummabels(ctx):
+    # renvoie la liste de tous les consommables disponibles pour le personnages courant
+    config = get_config()
+    system = get_system(ctx)
+    user = get_user(ctx)
+    character = get_character(ctx)
+    try : return list(config["sys"][system]["characters"][user]["characters"][character]["consommables"].keys())
+    except : return None
+
 def get_voice_channel(ctx):
     return ctx.voice_client
 
@@ -149,7 +158,7 @@ async def rollTFTL(ctx,config,user,character,system,test):
     carac = config["sys"][system]["characters"][user]["characters"][character]
     await play(ctx,'./data_sound/victory.mp3')
 
-    for i in test : 
+    for i in test :
         if i not in carac : await ctx.send("Test non reconnu."); return
 
     nbdice = int(carac[test[0]]) + int(carac[test[1]])
@@ -200,6 +209,7 @@ async def quitter(ctx):
         await ctx.voice_client.disconnect()
     except:
         pass
+    await ctx.message.add_reaction('👍')
     await client.close()
     await bot.change_presence(status=discord.Status.offline)
 
@@ -210,6 +220,7 @@ async def quitter(ctx):
 async def create_character(ctx, *name:str):
     # permet la création de personnage
     if len(name) > 1 : name = " ".join(name)
+    else : name = name[0]
     system = get_system(ctx)
     user = get_user(ctx)
     if system is None : await ctx.send("Le serveur n'utilise actuellement aucun système, choisissez-en un !"); return
@@ -218,7 +229,7 @@ async def create_character(ctx, *name:str):
     
     characters = get_all_character(ctx)
 
-    if characters is None : config["sys"][system]["characters"][user] = {"characters":{},"consommables":{},"curr_character":None}
+    if characters is None : config["sys"][system]["characters"][user] = {"characters":{},"curr_character":None}
     elif name in characters : await ctx.send("Ce personnage existe déjà."); return
     
     carac = get_carac(ctx)
@@ -241,6 +252,7 @@ async def create_character(ctx, *name:str):
 
     # le bot va capter tous les messages de l'utilisateur créant son personnage pour les associer aux caractéristiques demandées
     stats = {}
+    stats["consommables"] = {}
     i = 0
     await ctx.send("Saisissez vos valeurs de caractéristiques, les nombres doivent être positifs et entiers.")
     while( i < len(carac) ):
@@ -269,7 +281,7 @@ async def create_character(ctx, *name:str):
     await ctx.send(show_stat)
 
 @bot.command(name='deletec', aliases=['dc'], help="Commande pour supprimer un de ses personnages, alias : dc.")
-async def create_character(ctx, *name:str):
+async def delete_character(ctx, *name:str):
     if len(name) > 1 : name = " ".join(name)
     else : name = name[0]
     config = get_config()
@@ -305,6 +317,24 @@ async def set_caracteristic(ctx, carac:str, value:int):
 
     update(config)
     await ctx.send("Le personnage " + character + " a maintenant " + str(value) + " en carac.")
+
+@bot.command(name="up_consumable", aliases=['uc'], help="Permet de modifier la valeur d'une ressource dîtes consommable, alise : uc")
+async def up_consumable(ctx, consumable, value):
+    system = get_system(ctx)
+    user = get_user(ctx)
+    if system is None : await ctx.send("Choisissez un système."); return
+    character = get_character(ctx)
+    if character is None : await ctx.send("Vous n'utilisez actuellement aucun personnage."); return
+    config = get_config()
+    if not consumable in get_consummabels(ctx) : config["sys"][system]["characters"][user]["characters"][character]["consommables"][consumable] = 0
+    consume = float(config["sys"][system]["characters"][user]["characters"][character]["consommables"][consumable])
+    value = float(value.replace(",","."))
+    result = consume + value
+
+    config["sys"][system]["characters"][user]["characters"][character]["consommables"][consumable] = result
+    update(config)
+    await ctx.send("Le personnage {} a maintenant {} {}".format(character,result,consumable))
+    
     
 @bot.command(name='choose_character', aliases=['cch'], help="Permet à un joueur de choisir le personnage qu'il souhaite utiliser dans le système courant, alias : cch.")
 async def choose_character(ctx, *character:str):
@@ -340,7 +370,14 @@ async def show_character(ctx):
     embed = discord.Embed(title= character)
     
     for key,value in caracteristics.items():
+        if key == "consommables" : continue
         embed.add_field(name = key, value = str(value))
+
+    try:
+        for key,value in caracteristics["consommables"].items():
+            embed.add_field(name = key, value = str(value))
+    except : pass
+
     await ctx.send(embed=embed)
 
 @bot.command(name='add_carac', aliases=['ac'], help='Ajoute des capacités dans la liste des capacités disponibles du système courant, alias : ac.')
@@ -536,14 +573,12 @@ async def update_bot(ctx):
 
 
 @bot.command(name='up', help='test')
-async def up(ctx):
+async def up(ctx,*varargs):
     await ctx.send("Je suis up.")
-    # try:
-    #     await mpme("Users :")
-    #     guild = await client.fetch_guild(671029269597650984)
-    #     members = await guild.fetch_members().flatten()
-    #     await mpme(mebers[:5])
-    # except Exception as e : await mpme(str(e))
+    try:
+        fl = float(varargs[0])
+        await mpme(fl)
+    except Exception as e : pass
 
 @bot.command(name='dice', aliases=['d'], help='Lance des dés [n°dés]d[n°faces]')
 async def dice(ctx,dice:str):

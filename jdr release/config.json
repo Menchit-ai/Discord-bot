@@ -196,6 +196,14 @@
               "dormir": 99, 
               "manger": 50
             }, 
+            "consume": {
+              "boire": 45, 
+              "consommables": {
+                "boisson": -32.6
+              }, 
+              "dormir": 32, 
+              "manger": 11
+            }, 
             "essai": {
               "boire": 45, 
               "dormir": 65, 
@@ -212,7 +220,7 @@
               "manger": 23
             }
           }, 
-          "curr_character": null
+          "curr_character": "Menchrof"
         }, 
         "SQuiich": {
           "characters": {
