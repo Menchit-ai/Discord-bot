@@ -1,6 +1,6 @@
 {
   "curr_sys": {
-    "JDR": "test", 
+    "JDR": "cthulhu", 
     "Strat": "test"
   }, 
   "sys": {
@@ -49,6 +49,120 @@
         }
       }
     }, 
+    "cthulhu": {
+      "carac_system": [
+        "anthropologie", 
+        "app", 
+        "archeologie", 
+        "armes_poing", 
+        "arts_metiers", 
+        "baratin", 
+        "combat_a_distance", 
+        "combat_rapproche", 
+        "comptabilite", 
+        "con", 
+        "conduite", 
+        "conduite_engin_lourd", 
+        "corps_corps", 
+        "credit", 
+        "crochetage", 
+        "dex", 
+        "discretion", 
+        "droit", 
+        "ecouter", 
+        "edu", 
+        "electricite", 
+        "equitation", 
+        "esquive", 
+        "estimation", 
+        "for", 
+        "fusils", 
+        "grimper", 
+        "histoire", 
+        "imposture", 
+        "int", 
+        "lancer", 
+        "langue_maternelle", 
+        "langues", 
+        "mecanique", 
+        "medecine", 
+        "mvt", 
+        "mythe_de_cthulhu", 
+        "nager", 
+        "naturalisme", 
+        "occultisme", 
+        "orientation", 
+        "persuasion", 
+        "pickpocket", 
+        "pilotage", 
+        "pister", 
+        "pou", 
+        "premiers_soins", 
+        "psychanalyse", 
+        "psychologie", 
+        "sauter", 
+        "sciences", 
+        "survie", 
+        "tai", 
+        "test", 
+        "test", 
+        "trouver_objet_cacher"
+      ], 
+      "characters": {
+        "Menchrof": {
+          "characters": {
+            "Jean Dubois": {
+              "anthropologie": 1, 
+              "arch\u00e9ologie": 1, 
+              "armes_poing": 85, 
+              "arts_m\u00e9tiers": 45, 
+              "baratin": 5, 
+              "combat_rapproch\u00e9": 23, 
+              "combat_\u00e0_distance": 20, 
+              "comptabilit\u00e9": 65, 
+              "conduite": 85, 
+              "conduite_engin_lourd": 1, 
+              "corps_corps": 45, 
+              "crochetage": 13, 
+              "cr\u00e9dit": 35, 
+              "discr\u00e9tion": 32, 
+              "droit": 5, 
+              "ecouter": 5, 
+              "electricite": 65, 
+              "equitation": 12, 
+              "esquive": 35, 
+              "estimation": 54, 
+              "fusils": 35, 
+              "grimper": 20, 
+              "histoire": 12, 
+              "imposture": 32, 
+              "lancer": 89, 
+              "langue_maternelle": 65, 
+              "langues": 25, 
+              "mecanique": 35, 
+              "medecine": 45, 
+              "mythe_de_cthulhu": 65, 
+              "nager": 52, 
+              "naturalisme": 23, 
+              "occultisme": 65, 
+              "orientation": 53, 
+              "persuasion": 45, 
+              "pickpocket": 65, 
+              "pilotage": 53, 
+              "pister": 45, 
+              "premiers_soins": 35, 
+              "psychanalyse": 12, 
+              "psychologie": 32, 
+              "sauter": 12, 
+              "sciences": 2, 
+              "survie": 45, 
+              "trouver_objet_cacher": 100
+            }
+          }, 
+          "curr_character": "Jean Dubois"
+        }
+      }
+    }, 
     "stars": {
       "carac_system": [], 
       "characters": {}
@@ -87,21 +201,6 @@
               "dormir": 65, 
               "manger": 32
             }, 
-            "essai2": {
-              "boire": 45, 
-              "dormir": 65, 
-              "manger": 32
-            }, 
-            "jksjd ouif": {
-              "boire": 65, 
-              "dormir": 32, 
-              "manger": 45
-            }, 
-            "test 65": {
-              "boire": 56, 
-              "dormir": 32, 
-              "manger": 41
-            }, 
             "test25": {
               "boire": 2, 
               "dormir": 1, 
@@ -111,14 +210,9 @@
               "boire": 25, 
               "dormir": 65, 
               "manger": 23
-            }, 
-            "test56": {
-              "boire": 23, 
-              "dormir": 32, 
-              "manger": 25
             }
           }, 
-          "curr_character": "test 65"
+          "curr_character": null
         }, 
         "SQuiich": {
           "characters": {

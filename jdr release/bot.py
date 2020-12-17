@@ -28,14 +28,14 @@ bot = commands.Bot(command_prefix='/')
 def get_config():
     # renvoie le dictionnaire contenu dans config.json
     data = {}
-    with open(PATH,'r') as json_file:
+    with open(PATH,'r',encoding='utf-8') as json_file:
         try: data = json.load(json_file)
         except: return -1
     return data
 
 def update(data):
     # enregistre le dictionnaire data dans le fichier config.json
-    with open(PATH,'w') as json_file:
+    with open(PATH,'w',encoding='utf-8') as json_file:
         try: json.dump(data,json_file,indent=2, separators=(', ',': '), sort_keys=True, ensure_ascii=True)
         except: return -1
     return 1
@@ -57,9 +57,36 @@ async def play(ctx,path):
             vc = ctx.voice_client
 
         vc.play(discord.FFmpegPCMAudio(path))
-        vc.is_playing()
-    except RuntimeError as e:
-        await mpme(e)
+        while vc.is_playing() : time.sleep(0.1)
+        vc.disconnect()
+    except Exception as e:
+        await mpme(str(e))
+
+async def jingle(id, voice_channel):
+    try:
+        vc = await voice_channel.connect()
+        if   id ==  171623518772002816 : vc.play(discord.FFmpegPCMAudio("./data_sound/tu-tu-ru.mp3"))         # panda
+        elif id ==  153158340799627265 : vc.play(discord.FFmpegPCMAudio("./data_sound/snk.mp3"))              # squiich
+        elif id ==  311977846757392384 : vc.play(discord.FFmpegPCMAudio("./data_sound/chicken.mp3"))          # chicky
+        elif id ==  226369729093304320 : vc.play(discord.FFmpegPCMAudio("./data_sound/10_MILLIONS.mp3"))      # sasuke
+        elif id ==  224231591763902464 : vc.play(discord.FFmpegPCMAudio("./data_sound/pour-la-horde.mp3"))    # chevalier
+        elif id ==  234391398441287680 : vc.play(discord.FFmpegPCMAudio("./data_sound/poubelle.mp3"))         # constantin
+        elif id ==  466669390008549390 : vc.play(discord.FFmpegPCMAudio("./data_sound/nyctalope.mp3"))        # théo
+        elif id ==  292348214047408129 : vc.play(discord.FFmpegPCMAudio("./data_sound/ludicolo.mp3"))         # ludicolo
+        elif id ==  512022174853365770 : vc.play(discord.FFmpegPCMAudio("./data_sound/chipeur.mp3"))          # chippeur
+        elif id ==  540919479832674334 : vc.play(discord.FFmpegPCMAudio("./data_sound/bresil.mp3"))           # major
+        elif id ==  208294174909399040 : vc.play(discord.FFmpegPCMAudio("./data_sound/swain.mp3"))            # pierre
+        elif id ==  540934375810793473 : vc.play(discord.FFmpegPCMAudio("./data_sound/kiwi.mp3"))             # thibaud
+        elif id ==  290212793678954497 : vc.play(discord.FFmpegPCMAudio("./data_sound/pardon.mp3"))           # maillou
+        elif id ==  126345523358597120 : vc.play(discord.FFmpegPCMAudio("./data_sound/baby-yoda.mp3"))        # romain
+        elif id ==  250295841791672321 : vc.play(discord.FFmpegPCMAudio("./data_sound/yare-yare-daze.mp3"))   # nico
+        elif id ==  234016737048264704 : vc.play(discord.FFmpegPCMAudio("./data_sound/ouii.mp3"))             # menchrof
+        else : vc.play(discord.FFmpegPCMAudio("./data_sound/coucou.mp3")) # défaut
+        while vc.is_playing():time.sleep(0.1)
+        await vc.disconnect()
+    except Exception as e:
+        # await mpme(str(e))
+        pass
 
 def spellcheck(words):
     # initialise un objet spellcheck avec la liste de mot words dans le dictionnaire
@@ -191,7 +218,7 @@ async def create_character(ctx, *name:str):
     
     characters = get_all_character(ctx)
 
-    if characters is None : config["sys"][system]["characters"][user] = {"characters":{},"curr_character":None}
+    if characters is None : config["sys"][system]["characters"][user] = {"characters":{},"consommables":{},"curr_character":None}
     elif name in characters : await ctx.send("Ce personnage existe déjà."); return
     
     carac = get_carac(ctx)
@@ -241,6 +268,25 @@ async def create_character(ctx, *name:str):
     await ctx.send("\nLe personnage {} a bien été créé pour le joueur {}.".format(name,user))
     await ctx.send(show_stat)
 
+@bot.command(name='deletec', aliases=['dc'], help="Commande pour supprimer un de ses personnages, alias : dc.")
+async def create_character(ctx, *name:str):
+    if len(name) > 1 : name = " ".join(name)
+    else : name = name[0]
+    config = get_config()
+    user = get_user(ctx)
+    guild = get_guild(ctx)
+    system = get_system(ctx)
+    if system is None : await ctx.send("Il faut choisir un système courant."); return
+    characters = get_all_character(ctx)
+    if not (name in characters) : await ctx.send("Le personnage n'existe pas."); return
+    del config["sys"][system]["characters"][user]["characters"][name]
+
+    if get_character(ctx) == name : config["sys"][system]["characters"][user]["curr_character"] = None
+
+    update(config)
+    await ctx.send("Le personnage {} a bien été supprimé.".format(name))
+
+
 
 @bot.command(name="set_caracteristic", aliases=['setc'], help="Modifie la valeur d'une caractéristique du personnage courant, l'ajoute si elle n'existe pas, alias : setc.")
 async def set_caracteristic(ctx, carac:str, value:int):
@@ -264,6 +310,7 @@ async def set_caracteristic(ctx, carac:str, value:int):
 async def choose_character(ctx, *character:str):
     # définit le personnage passé en paramètre en tant que personnage courant
     if len(character) > 1 : character = " ".join(character)
+    else : character = character[0]
     system = get_system(ctx)
     if system is None : await ctx.send("Choisissez un système."); return
     config = get_config()
@@ -304,7 +351,14 @@ async def add_carac(ctx, *carac:str):
     if sys is None : await ctx.send("Choisissez le système courant auquel ajouter les caractéristiques"); return
 
     caracteristics = config["sys"][sys]["carac_system"]
-    for c in carac: caracteristics.append(c.lower())
+
+    for c in carac:
+        c = c.replace("é","e")
+        c = c.replace("è","e")
+        c = c.replace("à","a")
+        caracteristics.append(c.lower())
+    caracteristics = sorted(caracteristics)
+
     config["sys"][sys]["carac_system"] = caracteristics
 
     if not update(config) : await ctx.send("Il y a eu un problème dans l'enregistrement."); return
@@ -341,7 +395,7 @@ async def show_carac(ctx):
 async def h(ctx, option:str="g"):
     # commande donnant accès à la doc de tout le bot
     text = {}
-    with open("./help.json",'r') as json_file : text = json.load(json_file)
+    with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
     embed = discord.Embed(title= "Aide sur les commandes")
 
     for key,value in text["main"].items():
@@ -475,7 +529,7 @@ async def update_bot(ctx):
     shutil.copy("./config.json","./backup/backup_config.json")
     # relance le bot mais dans un autre processus
     subprocess.Popen("main.exe", shell=True)
-    await ctx.send("Redémarrage.")
+    await ctx.message.add_reaction('👍')
     # tue le processus courant
     await quitter(ctx)
     sys.exit() # ligne de sécurité au cas où la fonction quitter disfonctionnerait
@@ -503,7 +557,10 @@ async def dice(ctx,dice:str):
     li = list(map(int,li))
 
     result = str(sum(li)) + '\n' + 'Details : ' + dice + " " + str(li)
-    await ctx.send(result)
+
+    embed = discord.Embed()
+    embed.add_field(name = "Résultats", value=result, inline=False)
+    await ctx.send(embed=embed)
 
 @bot.command(name="report", help="Use for report bug or way of improvements.")
 async def report(ctx, *message:str):
@@ -557,7 +614,7 @@ async def on_reaction_add(reaction,user):
     # donne accès au tuto de création de personnage
     if reaction.emoji == '1️⃣' and not user.id == 778899886087077909:
         text = {}
-        with open("./help.json",'r') as json_file : text = json.load(json_file)
+        with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
 
         embed = discord.Embed(title= "Comment créer son personnage ?")
         for key,value in text["create_character"].items():
@@ -568,7 +625,7 @@ async def on_reaction_add(reaction,user):
     # donne accès au tuto de création de système
     elif reaction.emoji == '2️⃣' and not user.id == 778899886087077909:
         text = {}
-        with open("./help.json",'r') as json_file : text = json.load(json_file)
+        with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
 
         embed = discord.Embed(title= "Comment créer son propre système ?")
         for key,value in text["create_system"].items():
@@ -578,7 +635,7 @@ async def on_reaction_add(reaction,user):
     # donne accès aux informations générales
     elif reaction.emoji == '3️⃣' and not user.id == 778899886087077909:
         text = {}
-        with open("./help.json",'r') as json_file : text = json.load(json_file)
+        with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
 
         embed = discord.Embed(title= "Informations générales")
         for key,value in text["miscelanous"].items():
@@ -587,35 +644,15 @@ async def on_reaction_add(reaction,user):
 
 @bot.event
 async def on_voice_state_update(member, before, after):
-    if member == await bot.fetch_user(778899886087077909) : return # self
-    if member == await bot.fetch_user(234395307759108106) : return # groovy
-    if member == await bot.fetch_user(235088799074484224) : return # rythm
-    if before.self_mute == False and after.self_mute == True : return
-    if before.self_mute == True and after.self_mute == True : return
-    try:
-        vc = await after.channel.connect()
-        if   member.id ==  171623518772002816 : vc.play(discord.FFmpegPCMAudio("./data_sound/tu-tu-ru.mp3"))         # panda
-        elif member.id ==  153158340799627265 : vc.play(discord.FFmpegPCMAudio("./data_sound/snk.mp3"))              # squiich
-        elif member.id ==  311977846757392384 : vc.play(discord.FFmpegPCMAudio("./data_sound/chicken.mp3"))          # chicky
-        elif member.id ==  226369729093304320 : vc.play(discord.FFmpegPCMAudio("./data_sound/10_MILLIONS.mp3"))      # sasuke
-        elif member.id ==  224231591763902464 : vc.play(discord.FFmpegPCMAudio("./data_sound/prince-charmant.mp3"))  # chevalier
-        elif member.id ==  234391398441287680 : vc.play(discord.FFmpegPCMAudio("./data_sound/poubelle.mp3"))         # constantin
-        elif member.id ==  466669390008549390 : vc.play(discord.FFmpegPCMAudio("./data_sound/nyctalope.mp3"))        # théo
-        elif member.id ==  292348214047408129 : vc.play(discord.FFmpegPCMAudio("./data_sound/ludicolo.mp3"))         # ludicolo
-        elif member.id ==  512022174853365770 : vc.play(discord.FFmpegPCMAudio("./data_sound/chipeur.mp3"))          # chippeur
-        elif member.id ==  540919479832674334 : vc.play(discord.FFmpegPCMAudio("./data_sound/bresil.mp3"))           # major
-        elif member.id ==  208294174909399040 : vc.play(discord.FFmpegPCMAudio("./data_sound/swain.mp3"))            # pierre
-        elif member.id ==  540934375810793473 : vc.play(discord.FFmpegPCMAudio("./data_sound/kiwi.mp3"))             # thibaud
-        elif member.id ==  290212793678954497 : vc.play(discord.FFmpegPCMAudio("./data_sound/pardon.mp3"))           # maillou
-        elif member.id ==  126345523358597120 : vc.play(discord.FFmpegPCMAudio("./data_sound/baby-yoda.mp3"))        # romain do
-        elif member.id ==  250295841791672321 : vc.play(discord.FFmpegPCMAudio("./data_sound/yare-yare-daze.mp3"))   # nico
-        elif member.id ==  234016737048264704 : vc.play(discord.FFmpegPCMAudio("./data_sound/ouii.mp3"))             # menchrof
-        else : vc.play(discord.FFmpegPCMAudio("./data_sound/coucou.mp3")) # défaut
-        while vc.is_playing():time.sleep(0.1)
-        await vc.disconnect()
-    except Exception as error:
-        print(error)
-
+    # cette fonction est appelée à chaque modification du status d'un membre dans un salon vocal
+    # ici on ne détecte que la réactivation du micro ou le changement de channel en ayant le micro activé
+    # cette fonctionnalité c'est active qu'après 17 heures
+    if member.id == 778899886087077909 : return # self
+    if member.id == 234395307759108106 : return # groovy
+    if member.id == 235088799074484224 : return # rythm
+    if after.channel.id == 671029269597650988 and before.channel != after.channel: await jingle(member.id, after.channel); return
+    if (6 < datetime.today().hour and datetime.today().hour < 17) : return
+    if before.channel != after.channel : await jingle(member.id, after.channel); return
 
 
 # gestion de toutes les erreurs
