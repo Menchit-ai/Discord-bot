@@ -1,7 +1,7 @@
 {
   "curr_sys": {
     "JDR": "cthulhu", 
-    "Strat": "cthulhu"
+    "Strat": "test"
   }, 
   "sys": {
     "TFTL": {
@@ -25,27 +25,8 @@
       ], 
       "characters": {
         "Menchrof": {
-          "characters": {
-            "test": {
-              "agilit\u00e9": 6, 
-              "analyse": 3, 
-              "bricolage": 2, 
-              "charisme": 3, 
-              "charme": 2, 
-              "coeur": 5, 
-              "compr\u00e9hension": 7, 
-              "d\u00e9couverte": 6, 
-              "empathie": 5, 
-              "force": 9, 
-              "furtivit\u00e9": 8, 
-              "intelligence": 1, 
-              "physique": 4, 
-              "programmation": 3, 
-              "r\u00e9seau": 3, 
-              "technique": 3
-            }
-          }, 
-          "curr_character": "test"
+          "characters": {}, 
+          "curr_character": null
         }
       }
     }, 
@@ -125,21 +106,44 @@
         "comprendre_l'etrange", 
         "convaincre", 
         "courir", 
-        "déplacement_en_0_g", 
-        "discrétion", 
+        "d\u00e9placement_en_0_g", 
+        "discr\u00e9tion", 
         "garder_son_calme", 
-        "géologie", 
-        "mathématiques", 
+        "g\u00e9ologie", 
+        "math\u00e9matiques", 
         "nager", 
         "observer", 
         "pilotage", 
         "programmation", 
-        "réflexes", 
+        "r\u00e9flexes", 
         "sauter", 
         "soigner", 
         "survie"
       ], 
       "characters": {}
+    }, 
+    "test": {
+      "carac_system": [
+        "boire", 
+        "dormir", 
+        "manger"
+      ], 
+      "characters": {
+        "Menchrof": {
+          "characters": {
+            "tes t1": {
+              "boire": 25, 
+              "consommables": {
+                "hp": 25.0
+              }, 
+              "dormir": 32, 
+              "inventaire": {}, 
+              "manger": 45
+            }
+          }, 
+          "curr_character": "tes t1"
+        }
+      }
     }
   }
 }

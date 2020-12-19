@@ -13,23 +13,27 @@
         "d" : "Permet de faire un lancer de des\ndice (d): /d [nb des]d[nb faces]",
         "Important" : "Si vous avez des suggestions d'améliorations ou que vous voulez report un bug, utilisez la commande /report [votre message]",
         "DISCLAIMER" : "Les seuls systèmes utilisables sont les systèmes d100 (par defaut) et TFTL (pour le système TFTL)",
-        "Precision" : "Si vous voulez avoir une aide plus poussée sur une fonctionnalité cliquez sur les réactions :\n1 : tuto création personnage\n2 : tuto création d'un système\n3 : infos générales"
+        "Sommaire" : "Si vous voulez avoir une aide plus poussée sur une fonctionnalité cliquez sur les réactions :\n 0 : Commandes \n1 : Créer son personnage\n2 : Créer son système\n3 : Informations générales"
     },
     "Créer son personnage" : {
-        "1" : "Chaque personnage est propre à un système, vérifiez donc d'être dans le bon système. Pour voir dans quel système vous vous trouvez, vous pouvez taper /i, pour sélectionner un système, taper /sys [nom du système]",
-        "2" : "Maintenant que vous êtes dans le bon système, vous pouvez créer votre personnage en tapant /cc [nom du personnage]. Vous devrez ensuite rentrer vos caractéristiques en écrivant simplement la valeur de chacune lorsque le bot vous la demandera.",
-        "3" : "Si vous voulez ajouter des caractéristiques a votre personnage vous pouvez utiliser la commande setc en tapant /setc [nom compétence] [valeur]. Cette commande vous permet de modifier la valeur d'une caracteristique deja existante ou d'en ajouter une.",
-        "4" : "Enfin, il vous faut maintenant definir le personnage comme personnage utilise, pour ce faire, taper /cch [nom personnage].",
-        "5" : "Pour indiquer des ressources qui vont beaucoup varier, comme des points de vie, vous pouvez utiliser la commande /uc [nom consommable] [modification] \nPar exemple pour indiquer la perte de 4 points de vie, il faut taper /uc points_de_vie -4"
+        "Système" : "Chaque personnage est propre à un système, vérifiez donc d'être dans le bon système. Pour voir dans quel système vous vous trouvez, vous pouvez taper /i, pour sélectionner un système, taper /sys [nom du système]",
+        "Créer le personnage" : "Maintenant que vous êtes dans le bon système, vous pouvez créer votre personnage en tapant /cc [nom du personnage]. Vous devrez ensuite rentrer vos caractéristiques en écrivant simplement la valeur de chacune lorsque le bot vous la demandera.",
+        "Ajouter des caractéristiques" : "Si vous voulez ajouter des caractéristiques a votre personnage vous pouvez utiliser la commande setc en tapant /setc [nom compétence] [valeur]. Cette commande vous permet de modifier la valeur d'une caracteristique deja existante ou d'en ajouter une.",
+        "Choisir son personnage actif" : "Enfin, il vous faut maintenant definir le personnage comme personnage utilise, pour ce faire, taper /cch [nom personnage].",
+        "Gestion des ressources" : "Pour indiquer des ressources qui vont beaucoup varier, comme des points de vie, vous pouvez utiliser la commande /uc [nom_consommable] [modification] \nPar exemple pour indiquer la perte de 4 points de la ressource hp, il faut taper /uc hp -4. Faites attention à bien utiliser des underscores pour remplacer les espaces.",
+        "Ramasser des objets" : "Pour remplir votre inventaire utiliser la commande /prendre [nom_objet] [description]. \nAttention à bien utiliser des underscores dans le nom de l'objet mais ils ne sont pas obligatoire dans la description de celui-ci.",
+        "Lâcher des objets" : "Pour retirer un objet de son inventaire, utiliser la commande /lacher [nom_objet].",
+        "Sommaire" : "Si vous voulez avoir une aide plus poussée sur une fonctionnalité cliquez sur les réactions :\n 0 : Commandes \n1 : Créer son personnage\n2 : Créer son système\n3 : Informations générales"
     },
     "Créer son système" : {
-        "1" : "Utiliser la commande /sys [nom du système] c pour créer votre système (le caractère c permet d'indiquer que c'est une création).",
-        "2" : "Il faut utiliser ce système pour pouvoir le modifier, taper /sys [nom du système].",
-        "3" : "Vous pouvez maintenant définir les caractéristiques génériques de votre système. Ces caractéristiques seront communes à tous les personnages et en faire une liste exhaustive peut permettre une création de personnage plus rapide.",
-        "Ajout" : "Pour ajouter une caractéristique, utiliser la commande /ac [carac1] [carac2] ... Vous pouvez ajouter autant de caractéristiques que vous voulez en une seule fois, par contre vous ne pouvez pas utiliser d'espaces dans vos noms de capacités, utilisez des _ .",
-        "Suppression" : "pour supprimer des caractéristiques, la commande fonctionne de la même manière que pour les ajouter mais la commande se nomme rc : /rc [carac1] [carac2]...",
-        "4" : "Vous pouvez a tous moments utiliser la commande /sc pour voir toutes les caractéristiques de votre système.",
-        "Attention" : "Un serveur ne peut utiliser qu'un seul système a la fois !"
+        "Création" : "Utiliser la commande /sys [nom du système] c pour créer votre système (le caractère c permet d'indiquer que c'est une création).",
+        "Choix du système courant" : "Il faut utiliser ce système pour pouvoir le modifier, taper /sys [nom du système].",
+        "Définition des caractéristiques basiques" : "Vous pouvez maintenant définir les caractéristiques génériques de votre système. Ces caractéristiques seront communes à tous les personnages et en faire une liste exhaustive peut permettre une création de personnage plus rapide.",
+        "Ajout de caractéristiques" : "Pour ajouter une caractéristique, utiliser la commande /ac [carac1] [carac2] ... Vous pouvez ajouter autant de caractéristiques que vous voulez en une seule fois, par contre vous ne pouvez pas utiliser d'espaces dans vos noms de capacités, utilisez des _ .",
+        "Suppression de caractéristiques" : "pour supprimer des caractéristiques, la commande fonctionne de la même manière que pour les ajouter mais la commande se nomme rc : /rc [carac1] [carac2]...",
+        "Voir les caractéristiques" : "Vous pouvez a tous moments utiliser la commande /sc pour voir toutes les caractéristiques de votre système.",
+        "Attention" : "Un serveur ne peut utiliser qu'un seul système a la fois !",
+        "Sommaire" : "Si vous voulez avoir une aide plus poussée sur une fonctionnalité cliquez sur les réactions :\n 0 : Commandes \n1 : Créer son personnage\n2 : Créer son système\n3 : Informations générales"
     },
     "Informations générales" : {
         "Voir ses caractéristiques" : "Si vous voulez voir les caractéristiques de votre personnage courant, taper /sch",
@@ -38,6 +42,7 @@
         "Jet de dés standard" : "Pour lancer des dés, taper la commande /d [nb des]d[nb faces] attention à ne pas mettre d'espace entre les nombres et la lettre 'd' séparant ceux ci.",
         "Test de caractéristique" : "Pour effectuer un jet en utilisant une caractéristique de votre personnage, utiliser la commande /r [nom de la caracteristique] [modificateur] ce modificateur peut être un nombre entier positif ou negatif qui va impacter le jet (bonus, malus)",
         "Système d100 and co." : "Un système nouvellement créer utilise un système d100 (les caractéristiques vont de 1 a 100 et il faut faire un nombre inférieur à la valeur de sa caracteristique avec un d100). Pour utiliser de nouveaux systèmes de jeux, créer votre système et utilisez ensuite la commande /report [votre message] en donnant le nom de votre système ainsi qu'un descriptif ou un lien explicitant celui-ci.",
-        "Contact" : "A tous moments vous pouvez utiliser la commande /report [votre message] pour envoyer un commentaire sur le bot, que ce soit pour referencer un bug ou pour faire des suggestions d amelioration."
+        "Contact" : "A tous moments vous pouvez utiliser la commande /report [votre message] pour envoyer un commentaire sur le bot, que ce soit pour referencer un bug ou pour faire des suggestions d amelioration.",
+        "Sommaire" : "Si vous voulez avoir une aide plus poussée sur une fonctionnalité cliquez sur les réactions :\n 0 : Commandes \n1 : Créer son personnage\n2 : Créer son système\n3 : Informations générales"
     }
 }

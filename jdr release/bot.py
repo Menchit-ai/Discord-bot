@@ -25,6 +25,7 @@ REACTIONS_DOC = ['0️⃣','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6�
 client = discord.Client()
 
 bot = commands.Bot(command_prefix='/')
+bot.remove_command("help")
 
 def get_config():
     # renvoie le dictionnaire contenu dans config.json
@@ -222,6 +223,7 @@ async def create_character(ctx, *name:str):
     # permet la création de personnage
     if len(name) > 1 : name = " ".join(name)
     else : name = name[0]
+
     system = get_system(ctx)
     user = get_user(ctx)
     if system is None : await ctx.send("Le serveur n'utilise actuellement aucun système, choisissez-en un !"); return
@@ -232,7 +234,7 @@ async def create_character(ctx, *name:str):
 
     if characters is None : config["sys"][system]["characters"][user] = {"characters":{},"curr_character":None}
     elif name in characters : await ctx.send("Ce personnage existe déjà."); return
-    
+
     carac = get_carac(ctx)
     if len(carac)==0 : await ctx.send("Le système " + system + " n'a pas de caractéristique propre."); return
 
@@ -254,6 +256,7 @@ async def create_character(ctx, *name:str):
     # le bot va capter tous les messages de l'utilisateur créant son personnage pour les associer aux caractéristiques demandées
     stats = {}
     stats["consommables"] = {}
+    stats["inventaire"] = {}
     i = 0
     await ctx.send("Saisissez vos valeurs de caractéristiques, les nombres doivent être positifs et entiers.")
     while( i < len(carac) ):
@@ -276,10 +279,12 @@ async def create_character(ctx, *name:str):
 
     show_stat = "Le personnage a les caractéristiques suivantes : "
     for key,value in stats.items():
+        if key=="inventaire" or key=="consommables" : continue
         show_stat = show_stat + "\n" + key + " : " + str(value)
     # finalement on enregistre les valeurs dans le fichier de config et on affiche que tout s'est bien passé
     await ctx.send("\nLe personnage {} a bien été créé pour le joueur {}.".format(name,user))
     await ctx.send(show_stat)
+    await ctx.send("Si vous voulez vous ajouter des ressources consommables (points de vie, munitions) utilisez la commande /uc et pour ajouter des objets à votre inventaire utiliser la commande /prendre.")
 
 @bot.command(name='deletec', aliases=['dc'], help="Commande pour supprimer un de ses personnages, alias : dc.")
 async def delete_character(ctx, *name:str):
@@ -336,6 +341,40 @@ async def up_consumable(ctx, consumable, value):
     update(config)
     await ctx.send("Le personnage {} a maintenant {} {}".format(character,result,consumable))
     
+@bot.command(name="prendre", aliases=['ramasser','take'], help="Permet d'ajouter un objet à son inventaire.")
+async def prendre(ctx, objet, *description):
+    system = get_system(ctx)
+    user = get_user(ctx)
+    character = get_character(ctx)
+    if system is None : await ctx.send("Choisissez un système."); return
+    if character is None : await ctx.send("Vous n'utilisez actuellement aucun personnage."); return
+    config = get_config()
+    inventaire = config["sys"][system]["characters"][user]["characters"][character]["inventaire"]
+    if objet in inventaire.keys() : await ctx.send("Vous avez déjà cet objet dans votre ivnentaire."); return
+
+    if len(description) == 0 : description = None
+    elif len(description) == 1 : description = description[0]
+    else : description = " ".join(description)
+
+    inventaire[objet] = description
+    config["sys"][system]["characters"][user]["characters"][character]["inventaire"] = inventaire
+    update(config)
+    await ctx.send("Vous avez pris l'objet {}.".format(objet))
+
+@bot.command(name="lacher", aliases=['drop','utiliser'], help="Permet de supprimer un objet de son inventaire.")
+async def lacher(ctx, objet):
+    system = get_system(ctx)
+    user = get_user(ctx)
+    character = get_character(ctx)
+    if system is None : await ctx.send("Choisissez un système."); return
+    if character is None : await ctx.send("Vous n'utilisez actuellement aucun personnage."); return
+    config = get_config()
+    inventaire = config["sys"][system]["characters"][user]["characters"][character]["inventaire"]
+    if not objet in inventaire.keys() : await ctx.send("Vous n'avez pas cet objet dans votre inventaire."); return
+    del inventaire[objet]
+    config["sys"][system]["characters"][user]["characters"][character]["inventaire"] = inventaire
+    update(config)
+    await ctx.send("Vous avez lâché l'objet {}.".format(objet))
     
 @bot.command(name='choose_character', aliases=['cch'], help="Permet à un joueur de choisir le personnage qu'il souhaite utiliser dans le système courant, alias : cch.")
 async def choose_character(ctx, *character:str):
@@ -346,8 +385,10 @@ async def choose_character(ctx, *character:str):
     if system is None : await ctx.send("Choisissez un système."); return
     config = get_config()
     user = get_user(ctx)
-    
+    print(character)
     characters = get_all_character(ctx)
+    if characters is None : await ctx.send("Vous n'avez pas de personnage dans ce système."); return
+    if character is None : await ctx.send("Choisissez un personnage parmi " + ", ".join(characters))
     if not character in characters : await ctx.send(character + " n'est pas disponible."); return
 
     config["sys"][system]["characters"][user]["curr_character"] = character
@@ -370,13 +411,18 @@ async def show_character(ctx):
     embed = discord.Embed(title= character)
     
     for key,value in caracteristics.items():
-        if key == "consommables" : continue
+        if key == "consommables" or key == "inventaire": continue
         embed.add_field(name = key, value = str(value))
 
     try:
         for key,value in caracteristics["consommables"].items():
             embed.add_field(name = key, value = str(value))
     except : pass
+
+    inventaire = config["sys"][system]["characters"][user]["characters"][character]["inventaire"]
+    if len(inventaire) > 0:
+        for key,value in inventaire.items():
+            embed.add_field(name = key, value= value)
 
     await ctx.send(embed=embed)
 
@@ -428,8 +474,8 @@ async def show_carac(ctx):
     if len(caracteristics) == 0 : await ctx.send("Il n'y a pas encore de caractéristiques dans ce système."); return
     await ctx.send("Le système " + system + " possède les caractéristiques suivantes : " + ", ".join(caracteristics))
 
-@bot.command(name="h", help="Affiche les aides des commandes")
-async def h(ctx, option:str="g"):
+@bot.command(name="help", aliases=['h'], help="Affiche les aides des commandes")
+async def help(ctx, option:str="g"):
     # commande donnant accès à la doc de tout le bot
     text = {}
     with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
@@ -640,7 +686,7 @@ async def disconnect(ctx):
 async def on_ready():
     time.sleep(1)
     print('Connected to Discord!')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,name='/h for help'))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,name='/help'))
 
 @bot.event
 # permet de modifier les embeds d'aides en accédant à des sous catégories présentes dans le fichier help.json

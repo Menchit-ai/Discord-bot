@@ -1,1 +1,2 @@
 Menchrof : 2020-12-19 16:08:09.408491 : gestion d'inventaire
+Menchrof : 2020-12-19 17:56:18.121172 : donner la liste des personnages jouables quand le sch n'est pas appelé correctement
