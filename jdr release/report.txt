@@ -1,5 +1,1 @@
-2020-12-07 11:17:35.829736 : commande pour voir les caracs de quelqu'un d'autre
-2020-12-07 15:48:21.796417 : quand un personnage est créé le mettre par défaut
-Menchrof : 2020-12-08 18:00:04.814901 : ajout d'une gestion d'inventaire et/ou d'argent
-Menchrof : 2020-12-15 21:47:11.676750 : bug itallique avec underscore
-Menchrof : 2020-12-15 21:53:34.072333 : ajout pdv/consommables et gestion inventaire
+Menchrof : 2020-12-19 16:08:09.408491 : gestion d'inventaire

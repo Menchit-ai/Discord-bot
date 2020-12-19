@@ -20,6 +20,7 @@ intents.members = True
 TOKEN = os.getenv('DISCORD_TOKEN')
 ME = os.getenv('DISCORD_ID_ME')
 PATH = "D:/perso/discordBot/jdr release/config.json"
+REACTIONS_DOC = ['0️⃣','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟']
 
 client = discord.Client()
 
@@ -347,7 +348,6 @@ async def choose_character(ctx, *character:str):
     user = get_user(ctx)
     
     characters = get_all_character(ctx)
-
     if not character in characters : await ctx.send(character + " n'est pas disponible."); return
 
     config["sys"][system]["characters"][user]["curr_character"] = character
@@ -435,14 +435,13 @@ async def h(ctx, option:str="g"):
     with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
     embed = discord.Embed(title= "Aide sur les commandes")
 
-    for key,value in text["main"].items():
+    for key,value in text[list(text.keys())[0]].items():
         embed.add_field(name=key, value=value, inline=False)
 
     msg = await ctx.send(embed=embed)
 
-    await msg.add_reaction('1️⃣')
-    await msg.add_reaction('2️⃣')
-    await msg.add_reaction('3️⃣')
+    for i in range(len(text.keys())):
+        await msg.add_reaction(REACTIONS_DOC[i])
 
 @bot.command(name='system', aliases=['sys'], help='Permet de définir le système de jeu utilisé dans tout le serveur Discord. option : c (nouveau système)')
 async def change_system(ctx, newstate:str, option:str=None):
@@ -646,36 +645,16 @@ async def on_ready():
 @bot.event
 # permet de modifier les embeds d'aides en accédant à des sous catégories présentes dans le fichier help.json
 async def on_reaction_add(reaction,user):
-    # donne accès au tuto de création de personnage
-    if reaction.emoji == '1️⃣' and not user.id == 778899886087077909:
-        text = {}
-        with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
+    if user.id == 778899886087077909 : return
+    if not (reaction.emoji in REACTIONS_DOC) : return
+    text = {}
+    with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
+    key = list(text.keys())[REACTIONS_DOC.index(reaction.emoji)]
+    embed = discord.Embed(title=key)
+    for key,value in text[key].items():
+        embed.add_field(name=key, value=value, inline=False)
+    await reaction.message.edit(embed=embed)
 
-        embed = discord.Embed(title= "Comment créer son personnage ?")
-        for key,value in text["create_character"].items():
-            embed.add_field(name=key, value=value, inline=False)
-
-        await reaction.message.edit(embed=embed)
-
-    # donne accès au tuto de création de système
-    elif reaction.emoji == '2️⃣' and not user.id == 778899886087077909:
-        text = {}
-        with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
-
-        embed = discord.Embed(title= "Comment créer son propre système ?")
-        for key,value in text["create_system"].items():
-            embed.add_field(name=key, value=value, inline=False)
-        await reaction.message.edit(embed=embed)
-
-    # donne accès aux informations générales
-    elif reaction.emoji == '3️⃣' and not user.id == 778899886087077909:
-        text = {}
-        with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
-
-        embed = discord.Embed(title= "Informations générales")
-        for key,value in text["miscelanous"].items():
-            embed.add_field(name=key, value=value, inline=False)
-        await reaction.message.edit(embed=embed)
 
 @bot.event
 async def on_voice_state_update(member, before, after):
@@ -685,9 +664,10 @@ async def on_voice_state_update(member, before, after):
     if member.id == 778899886087077909 : return # self
     if member.id == 234395307759108106 : return # groovy
     if member.id == 235088799074484224 : return # rythm
-    if after.channel.id == 671029269597650988 and before.channel != after.channel: await jingle(member.id, after.channel); return
+    if not (before.channel != after.channel) : return
+    if after.channel.id == 671029269597650988 : await jingle(member.id, after.channel); return
     if (6 < datetime.today().hour and datetime.today().hour < 17) : return
-    if before.channel != after.channel : await jingle(member.id, after.channel); return
+    await jingle(member.id, after.channel)
 
 
 # gestion de toutes les erreurs

@@ -1,7 +1,7 @@
 {
   "curr_sys": {
     "JDR": "cthulhu", 
-    "Strat": "test"
+    "Strat": "cthulhu"
   }, 
   "sys": {
     "TFTL": {
@@ -57,22 +57,22 @@
         "armes_poing", 
         "arts_metiers", 
         "baratin", 
-        "combat_a_distance", 
-        "combat_rapproche", 
-        "comptabilite", 
+        "combat_\u00e0_distance", 
+        "combat_rapproch\u00e9", 
+        "comptabilit\u00e9", 
         "con", 
         "conduite", 
         "conduite_engin_lourd", 
-        "corps_corps", 
-        "credit", 
+        "corps_\u00e0_corps", 
+        "cr\u00e9dit", 
         "crochetage", 
         "dex", 
-        "discretion", 
+        "discr\u00e9tion", 
         "droit", 
-        "ecouter", 
-        "edu", 
-        "electricite", 
-        "equitation", 
+        "\u00e9couter", 
+        "\u00e9du", 
+        "\u00e9lectricit\u00e9", 
+        "\u00e9quitation", 
         "esquive", 
         "estimation", 
         "for", 
@@ -84,8 +84,8 @@
         "lancer", 
         "langue_maternelle", 
         "langues", 
-        "mecanique", 
-        "medecine", 
+        "m\u00e9canique", 
+        "m\u00e9decine", 
         "mvt", 
         "mythe_de_cthulhu", 
         "nager", 
@@ -104,145 +104,42 @@
         "sciences", 
         "survie", 
         "tai", 
-        "test", 
-        "test", 
         "trouver_objet_cacher"
       ], 
       "characters": {
         "Menchrof": {
-          "characters": {
-            "Jean Dubois": {
-              "anthropologie": 1, 
-              "arch\u00e9ologie": 1, 
-              "armes_poing": 85, 
-              "arts_m\u00e9tiers": 45, 
-              "baratin": 5, 
-              "combat_rapproch\u00e9": 23, 
-              "combat_\u00e0_distance": 20, 
-              "comptabilit\u00e9": 65, 
-              "conduite": 85, 
-              "conduite_engin_lourd": 1, 
-              "corps_corps": 45, 
-              "crochetage": 13, 
-              "cr\u00e9dit": 35, 
-              "discr\u00e9tion": 32, 
-              "droit": 5, 
-              "ecouter": 5, 
-              "electricite": 65, 
-              "equitation": 12, 
-              "esquive": 35, 
-              "estimation": 54, 
-              "fusils": 35, 
-              "grimper": 20, 
-              "histoire": 12, 
-              "imposture": 32, 
-              "lancer": 89, 
-              "langue_maternelle": 65, 
-              "langues": 25, 
-              "mecanique": 35, 
-              "medecine": 45, 
-              "mythe_de_cthulhu": 65, 
-              "nager": 52, 
-              "naturalisme": 23, 
-              "occultisme": 65, 
-              "orientation": 53, 
-              "persuasion": 45, 
-              "pickpocket": 65, 
-              "pilotage": 53, 
-              "pister": 45, 
-              "premiers_soins": 35, 
-              "psychanalyse": 12, 
-              "psychologie": 32, 
-              "sauter": 12, 
-              "sciences": 2, 
-              "survie": 45, 
-              "trouver_objet_cacher": 100
-            }
-          }, 
-          "curr_character": "Jean Dubois"
+          "characters": {}, 
+          "curr_character": null
         }
       }
     }, 
     "stars": {
-      "carac_system": [], 
-      "characters": {}
-    }, 
-    "test": {
       "carac_system": [
-        "boire", 
-        "dormir", 
-        "manger"
+        "adaptation", 
+        "astrophysique", 
+        "bidouiller", 
+        "biologie", 
+        "bricoler", 
+        "combat_a_distance", 
+        "combat_au_corps_a_corps", 
+        "comprendre_l'etrange", 
+        "convaincre", 
+        "courir", 
+        "déplacement_en_0_g", 
+        "discrétion", 
+        "garder_son_calme", 
+        "géologie", 
+        "mathématiques", 
+        "nager", 
+        "observer", 
+        "pilotage", 
+        "programmation", 
+        "réflexes", 
+        "sauter", 
+        "soigner", 
+        "survie"
       ], 
-      "characters": {
-        "Chicken Potatoes": {
-          "characters": {
-            "siki": {
-              "boire": 50, 
-              "dormir": 12, 
-              "manger": 45
-            }
-          }, 
-          "curr_character": "siki"
-        }, 
-        "Menchrof": {
-          "characters": {
-            "Lui": {
-              "boire": 45, 
-              "dormir": 65, 
-              "manger": 84
-            }, 
-            "Menchrof": {
-              "boire": 1, 
-              "dormir": 99, 
-              "manger": 50
-            }, 
-            "consume": {
-              "boire": 45, 
-              "consommables": {
-                "boisson": -32.6
-              }, 
-              "dormir": 32, 
-              "manger": 11
-            }, 
-            "essai": {
-              "boire": 45, 
-              "dormir": 65, 
-              "manger": 32
-            }, 
-            "test25": {
-              "boire": 2, 
-              "dormir": 1, 
-              "manger": 3
-            }, 
-            "test32": {
-              "boire": 25, 
-              "dormir": 65, 
-              "manger": 23
-            }
-          }, 
-          "curr_character": "Menchrof"
-        }, 
-        "SQuiich": {
-          "characters": {
-            "moi": {
-              "boire": 100, 
-              "dormir": 100, 
-              "manger": 100
-            }
-          }, 
-          "curr_character": "moi"
-        }, 
-        "Theo_Guerrois": {
-          "characters": {
-            "Bebou": {
-              "boire": 8, 
-              "dormir": 8, 
-              "manger": 100
-            }
-          }, 
-          "curr_character": "Bebou"
-        }
-      }
+      "characters": {}
     }
   }
 }
