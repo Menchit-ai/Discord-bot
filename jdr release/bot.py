@@ -182,23 +182,23 @@ async def defaultRoll(ctx,config,user,character,system,test,mod):
     if test not in carac : await ctx.send("Le test n'est pas reconnu."); return
 
     roll = random.randint(1,100)
-    if roll <= 10: await play(ctx,'./data_sound/victory.mp3')
-    elif roll >= 90 : await play(ctx,'./data_sound/fail.mp3')
-    else : await play(ctx,'./data_sound/dice_sound.mp3')
-
     value = carac[test]
 
     result = character + " fait un test sous son " + test + " :\n" + str(roll) + '/' + str(value+mod) + " : "
 
     true_value = value + mod
     
-    if roll <= 10: result = result + "SUCCES CRITIQUE !"
-    elif roll >= 90: result = result + "ECHEC CRITIQUE !"
-    elif roll <= true_value: result = result + "succès."
+    # if roll <= 10: result = result + "SUCCES CRITIQUE !"
+    # elif roll >= 90: result = result + "ECHEC CRITIQUE !"
+    if roll <= true_value: result = result + "succès."
     elif roll > true_value: result = result + "échec."
     else: result = result + "valeur non interprétée."
 
     await ctx.send(result)
+
+    if roll <= 10: await play(ctx,'./data_sound/victory.mp3')
+    elif roll >= 90 : await play(ctx,'./data_sound/fail.mp3')
+    else : await play(ctx,'./data_sound/dice_sound.mp3')
 
 async def mpme(message):
     # m'envoie un message privé via le bot
@@ -257,6 +257,7 @@ async def create_character(ctx, *name:str):
     stats = {}
     stats["consommables"] = {}
     stats["inventaire"] = {}
+    stats["descriptif"] = ""
     i = 0
     await ctx.send("Saisissez vos valeurs de caractéristiques, les nombres doivent être positifs et entiers.")
     while( i < len(carac) ):
@@ -375,17 +376,39 @@ async def lacher(ctx, objet):
     config["sys"][system]["characters"][user]["characters"][character]["inventaire"] = inventaire
     update(config)
     await ctx.send("Vous avez lâché l'objet {}.".format(objet))
+
+@bot.command(name="descriptif",aliases=["desc"], help="permet de donner une description de son personnage, option : a pour ajouter, w pour écraser, r pour afficher")
+async def descriptif(ctx,option,*descriptif):
+    system = get_system(ctx)
+    user = get_user(ctx)
+    character = get_character(ctx)
+    if system is None : await ctx.send("Choisissez un système."); return
+    if character is None : await ctx.send("Vous n'utilisez actuellement aucun personnage."); return
+    config = get_config()
+    if len(descriptif) == 1 : descriptif = descriptif[0]
+    else : descriptif = " ".join(descriptif)
+    if option.lower().strip() == "w":
+        config["sys"][system]["characters"][user]["characters"][character]["descriptif"] = descriptif
+    elif option.lower().strip() == "a":
+        tmp_desc = config["sys"][system]["characters"][user]["characters"][character]["descriptif"]
+        config["sys"][system]["characters"][user]["characters"][character]["descriptif"] = tmp_desc +"\n" + descriptif
+    else : 
+        if config["sys"][system]["characters"][user]["characters"][character]["descriptif"] == "" : await ctx.send("Vous n'avez pas encore de description.");return
+        await ctx.send(config["sys"][system]["characters"][user]["characters"][character]["descriptif"]); return
+    update(config)
+    await ctx.send("Voici la nouvelle description de votre personnage :\n"+config["sys"][system]["characters"][user]["characters"][character]["descriptif"])
     
 @bot.command(name='choose_character', aliases=['cch'], help="Permet à un joueur de choisir le personnage qu'il souhaite utiliser dans le système courant, alias : cch.")
 async def choose_character(ctx, *character:str):
     # définit le personnage passé en paramètre en tant que personnage courant
+    print(character)
     if len(character) > 1 : character = " ".join(character)
     else : character = character[0]
     system = get_system(ctx)
     if system is None : await ctx.send("Choisissez un système."); return
     config = get_config()
     user = get_user(ctx)
-    print(character)
+    
     characters = get_all_character(ctx)
     if characters is None : await ctx.send("Vous n'avez pas de personnage dans ce système."); return
     if character is None : await ctx.send("Choisissez un personnage parmi " + ", ".join(characters))
@@ -408,23 +431,51 @@ async def show_character(ctx):
 
     caracteristics = config["sys"][system]["characters"][user]["characters"][character]
 
-    embed = discord.Embed(title= character)
+    embed = discord.Embed(title = character)
+    embedchar = discord.Embed(title= character)
+    embeditems = discord.Embed(title= "Inventaire")
+
+    carac = ""
+    items = ""
+    conso = ""
     
     for key,value in caracteristics.items():
-        if key == "consommables" or key == "inventaire": continue
-        embed.add_field(name = key, value = str(value))
+        if key == "consommables" or key == "inventaire" or key == "descriptif": continue
+        #embedchar.add_field(name = key, value = str(value))
+        carac = carac + "*"+key+"*" + " : " + str(value) +"\n"
+    embed.add_field(name = "Caractéristiques", value = carac, inline=True)
 
     try:
         for key,value in caracteristics["consommables"].items():
-            embed.add_field(name = key, value = str(value))
+            conso = conso + key + " : " + str(value) +"\n"
     except : pass
+    embed.add_field(name= "Ressources", value = conso, inline=True)
 
     inventaire = config["sys"][system]["characters"][user]["characters"][character]["inventaire"]
-    if len(inventaire) > 0:
+    if len(inventaire.keys()) > 0:
         for key,value in inventaire.items():
-            embed.add_field(name = key, value= value)
+            if value is None : value = " - "
+            else : value = " ".join(value.split("_"))
+            items = items + key + " : " + str(value) +"\n"
+    embed.add_field(name= "Objets", value = items, inline=True)
 
+
+####################################
+
+    try:
+        for key,value in caracteristics["consommables"].items():
+            embeditems.add_field(name = key, value = str(value), inline = True)
+    except Exception as e: print(e)
+
+    inventaire = config["sys"][system]["characters"][user]["characters"][character]["inventaire"]
+    if len(inventaire.keys()) > 0:
+        for key,value in inventaire.items():
+            if value is None : value = " - "
+            else : value = " ".join(value.split("_"))
+            embeditems.add_field(name = key, value = value, inline=True)
     await ctx.send(embed=embed)
+    # await ctx.send(embed=embedchar)
+    # await ctx.send(embed=embeditems)
 
 @bot.command(name='add_carac', aliases=['ac'], help='Ajoute des capacités dans la liste des capacités disponibles du système courant, alias : ac.')
 async def add_carac(ctx, *carac:str):
@@ -479,7 +530,7 @@ async def help(ctx, option:str="g"):
     # commande donnant accès à la doc de tout le bot
     text = {}
     with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
-    embed = discord.Embed(title= "Aide sur les commandes")
+    embed = discord.Embed(title= "Aide sur les commandes",author="help")
 
     for key,value in text[list(text.keys())[0]].items():
         embed.add_field(name=key, value=value, inline=False)
@@ -693,10 +744,11 @@ async def on_ready():
 async def on_reaction_add(reaction,user):
     if user.id == 778899886087077909 : return
     if not (reaction.emoji in REACTIONS_DOC) : return
+    
     text = {}
     with open("./help.json",'r',encoding='utf-8') as json_file : text = json.load(json_file)
     key = list(text.keys())[REACTIONS_DOC.index(reaction.emoji)]
-    embed = discord.Embed(title=key)
+    embed = discord.Embed(title=key,decription="Documentation")
     for key,value in text[key].items():
         embed.add_field(name=key, value=value, inline=False)
     await reaction.message.edit(embed=embed)
@@ -710,7 +762,7 @@ async def on_voice_state_update(member, before, after):
     if member.id == 778899886087077909 : return # self
     if member.id == 234395307759108106 : return # groovy
     if member.id == 235088799074484224 : return # rythm
-    if not (before.channel != after.channel) : return
+    if before is None or not (before.channel != after.channel) : return
     if after.channel.id == 671029269597650988 : await jingle(member.id, after.channel); return
     if (6 < datetime.today().hour and datetime.today().hour < 17) : return
     await jingle(member.id, after.channel)

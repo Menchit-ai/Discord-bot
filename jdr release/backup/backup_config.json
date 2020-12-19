@@ -1,7 +1,7 @@
 {
   "curr_sys": {
     "JDR": "cthulhu", 
-    "Strat": "cthulhu"
+    "Strat": "stars"
   }, 
   "sys": {
     "TFTL": {
@@ -25,69 +25,47 @@
       ], 
       "characters": {
         "Menchrof": {
-          "characters": {
-            "test": {
-              "agilit\u00e9": 6, 
-              "analyse": 3, 
-              "bricolage": 2, 
-              "charisme": 3, 
-              "charme": 2, 
-              "coeur": 5, 
-              "compr\u00e9hension": 7, 
-              "d\u00e9couverte": 6, 
-              "empathie": 5, 
-              "force": 9, 
-              "furtivit\u00e9": 8, 
-              "intelligence": 1, 
-              "physique": 4, 
-              "programmation": 3, 
-              "r\u00e9seau": 3, 
-              "technique": 3
-            }
-          }, 
-          "curr_character": "test"
+          "characters": {}, 
+          "curr_character": null
         }
       }
     }, 
     "cthulhu": {
       "carac_system": [
         "anthropologie", 
-        "app", 
+        "apparence", 
         "archeologie", 
         "armes_poing", 
         "arts_metiers", 
         "baratin", 
-        "combat_\u00e0_distance", 
-        "combat_rapproch\u00e9", 
+        "bibliotheque", 
+        "chance", 
+        "charme", 
         "comptabilit\u00e9", 
-        "con", 
         "conduite", 
         "conduite_engin_lourd", 
+        "constitution", 
         "corps_\u00e0_corps", 
-        "cr\u00e9dit", 
         "crochetage", 
-        "dex", 
+        "cr\u00e9dit", 
+        "dexterite", 
         "discr\u00e9tion", 
         "droit", 
-        "\u00e9couter", 
-        "\u00e9du", 
-        "\u00e9lectricit\u00e9", 
-        "\u00e9quitation", 
+        "education", 
         "esquive", 
         "estimation", 
-        "for", 
+        "force", 
         "fusils", 
         "grimper", 
         "histoire", 
         "imposture", 
-        "int", 
+        "intelligence", 
         "lancer", 
         "langue_maternelle", 
-        "langues", 
+        "mouvement", 
+        "mythe_de_cthulhu", 
         "m\u00e9canique", 
         "m\u00e9decine", 
-        "mvt", 
-        "mythe_de_cthulhu", 
         "nager", 
         "naturalisme", 
         "occultisme", 
@@ -96,20 +74,97 @@
         "pickpocket", 
         "pilotage", 
         "pister", 
-        "pou", 
+        "pouvoir", 
         "premiers_soins", 
         "psychanalyse", 
         "psychologie", 
         "sauter", 
         "sciences", 
         "survie", 
-        "tai", 
-        "trouver_objet_cacher"
+        "taille", 
+        "trouver_objet_cacher", 
+        "\u00e9couter", 
+        "\u00e9lectricit\u00e9", 
+        "\u00e9quitation"
       ], 
       "characters": {
         "Menchrof": {
-          "characters": {}, 
-          "curr_character": null
+          "characters": {
+            "Jean Dubois": {
+              "anthropologie": 1, 
+              "apparence": 40, 
+              "archeologie": 60, 
+              "armes_poing": 25, 
+              "arts_metiers": 5, 
+              "baratin": 5, 
+              "bibliotheque": 70, 
+              "chance": 60, 
+              "charme": 15, 
+              "comptabilit\u00e9": 5, 
+              "conduite": 40, 
+              "conduite_engin_lourd": 1, 
+              "consommables": {
+                "munitions": 18.0, 
+                "pv": 11.0, 
+                "sant\u00e9_mentale": 100.0
+              }, 
+              "constitution": 50, 
+              "corps_\u00e0_corps": 25, 
+              "crochetage": 1, 
+              "cr\u00e9dit": 50, 
+              "descriptif": "Jean Dubois est un arch\u00e9ologue ayant une petite vingtaine d'ann\u00e9e. Il est plut\u00f4t grand, costaud et son visage est assez rugueux. Il s'est, au d\u00e9but de ses \u00e9tudes, li\u00e9 d'amiti\u00e9 avec un de ses camarades, un certains Roger Dumoins. Ces deux personnes ont \u00e9t\u00e9 compagnon d'exp\u00e9dition lors de leur premier visite en Am\u00e9rique du Sud au P\u00e9rou o\u00f9 ils ont pu \u00e9tudier les traces d'anciennes civilisations am\u00e9rindiennes. Jean est \u00e9galement passionn\u00e9 par la personne et les \u00e9crit de Karl Marx dont les id\u00e9es sont tr\u00e8s ancr\u00e9es dans son c\u0153ur de membre du Parti Communiste Fran\u00e7ais. Enfin, Jean est un r\u00eaveur, il r\u00eave de d\u00e9couvrir les traces d'une civilisation alors inconnue de tous.", 
+              "dexterite": 45, 
+              "discr\u00e9tion": 20, 
+              "droit": 5, 
+              "education": 75, 
+              "espagnole": 30, 
+              "esquive": 18, 
+              "estimation": 15, 
+              "force": 75, 
+              "fusils": 72, 
+              "grimper": 20, 
+              "histoire": 25, 
+              "imposture": 5, 
+              "intelligence": 55, 
+              "inventaire": {
+                "Das_Kapital": "le fameux livre de Karl Marx, mon id\u00f4le", 
+                "boite_allumettes_imperm\u00e9ables": null, 
+                "boussole": null, 
+                "couteau_de_chasse": null, 
+                "fusil_de_chasse": "un fusil de chasse double gachettes qui a une port\u00e9e de 50m et qui fait de lourds d\u00e9gats \u00e0 courte port\u00e9e", 
+                "lampe_torche": "une grosse lampe torche pouvant \u00eatre utilis\u00e9e comme matraque si besoin", 
+                "sac_de_voyage": null, 
+                "trousse_premiers_soins": null
+              }, 
+              "lancer": 20, 
+              "langue_maternelle": 75, 
+              "mouvement": 8, 
+              "mythe_de_cthulhu": 0, 
+              "m\u00e9canique": 40, 
+              "m\u00e9decine": 1, 
+              "nager": 20, 
+              "naturalisme": 10, 
+              "occultisme": 5, 
+              "orientation": 10, 
+              "persuasion": 10, 
+              "pickpocket": 10, 
+              "pilotage": 1, 
+              "pister": 10, 
+              "pouvoir": 35, 
+              "premiers_soins": 40, 
+              "psychanalyse": 1, 
+              "psychologie": 10, 
+              "sauter": 20, 
+              "sciences": 16, 
+              "survie": 25, 
+              "taille": 60, 
+              "trouver_objet_cacher": 80, 
+              "\u00e9couter": 20, 
+              "\u00e9lectricit\u00e9": 10, 
+              "\u00e9quitation": 5
+            }
+          }, 
+          "curr_character": "Jean Dubois"
         }
       }
     }, 
@@ -125,21 +180,82 @@
         "comprendre_l'etrange", 
         "convaincre", 
         "courir", 
-        "déplacement_en_0_g", 
-        "discrétion", 
+        "d\u00e9placement_en_0_g", 
+        "discr\u00e9tion", 
         "garder_son_calme", 
-        "géologie", 
-        "mathématiques", 
+        "g\u00e9ologie", 
+        "math\u00e9matiques", 
         "nager", 
         "observer", 
         "pilotage", 
         "programmation", 
-        "réflexes", 
+        "r\u00e9flexes", 
         "sauter", 
         "soigner", 
         "survie"
       ], 
-      "characters": {}
+      "characters": {
+        "J\u00e9r\u00f4me Kacimi": {
+          "characters": {
+            "Steven Stone": {
+              "adaptation": 70, 
+              "astrophysique": 50, 
+              "bidouiller": 75, 
+              "biologie": 30, 
+              "bricoler": 75, 
+              "combat_a_distance": 50, 
+              "combat_au_corps_a_corps": 55, 
+              "comprendre_l'etrange": 50, 
+              "consommables": {
+                "hp": 14.0, 
+                "sanity": 12.0
+              }, 
+              "convaincre": 40, 
+              "courir": 60, 
+              "descriptif": "", 
+              "discr\u00e9tion": 55, 
+              "d\u00e9placement_en_0_g": 40, 
+              "garder_son_calme": 69, 
+              "g\u00e9ologie": 30, 
+              "inventaire": {
+                "collier": null
+              }, 
+              "math\u00e9matiques": 50, 
+              "nager": 60, 
+              "observer": 75, 
+              "pilotage": 50, 
+              "programmation": 67, 
+              "r\u00e9flexes": 55, 
+              "sauter": 60, 
+              "soigner": 50, 
+              "survie": 65
+            }
+          }, 
+          "curr_character": "Steven Stone"
+        }
+      }
+    }, 
+    "test": {
+      "carac_system": [
+        "boire", 
+        "dormir", 
+        "manger"
+      ], 
+      "characters": {
+        "Menchrof": {
+          "characters": {
+            "desc": {
+              "boire": 0, 
+              "consommables": {}, 
+              "descriptif": "description de test", 
+              "dormir": 0, 
+              "inventaire": {}, 
+              "manger": 0
+            }
+          }, 
+          "curr_character": "desc"
+        }
+      }
     }
   }
 }
