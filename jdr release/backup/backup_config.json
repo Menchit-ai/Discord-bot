@@ -195,6 +195,75 @@
         "survie"
       ], 
       "characters": {
+        "Andr\u00f8s": {
+          "characters": {
+            "Lenny Fox": {
+              "adaptation": 70, 
+              "astrophysique": 65, 
+              "bidouiller": 60, 
+              "biologie": 82, 
+              "bricoler": 60, 
+              "combat_a_distance": 50, 
+              "combat_au_corps_a_corps": 55, 
+              "comprendre_l'etrange": 85, 
+              "consommables": {}, 
+              "convaincre": 70, 
+              "courir": 45, 
+              "descriptif": "", 
+              "discr\u00e9tion": 50, 
+              "d\u00e9placement_en_0_g": 25, 
+              "garder_son_calme": 70, 
+              "g\u00e9ologie": 82, 
+              "inventaire": {}, 
+              "math\u00e9matiques": 65, 
+              "nager": 45, 
+              "observer": 60, 
+              "pilotage": 50, 
+              "programmation": 55, 
+              "r\u00e9flexes": 40, 
+              "sauter": 45, 
+              "soigner": 50, 
+              "survie": 60
+            }
+          }, 
+          "curr_character": "Lenny Fox"
+        }, 
+        "Chicken Potatoes": {
+          "characters": {
+            "Fran\u00e7ois De Paumerlot": {
+              "adaptation": 45, 
+              "astrophysique": 80, 
+              "bidouiller": 40, 
+              "biologie": 65, 
+              "bricoler": 40, 
+              "combat_a_distance": 35, 
+              "combat_au_corps_a_corps": 25, 
+              "comprendre_l'etrange": 60, 
+              "consommables": {
+                "hp": 10.0, 
+                "sanity": 12.0
+              }, 
+              "convaincre": 55, 
+              "courir": 40, 
+              "descriptif": "", 
+              "discr\u00e9tion": 60, 
+              "d\u00e9placement_en_0_g": 35, 
+              "garder_son_calme": 60, 
+              "g\u00e9ologie": 65, 
+              "inventaire": {}, 
+              "math\u00e9matiques": 80, 
+              "nager": 40, 
+              "observer": 80, 
+              "pilotage": 55, 
+              "programmation": 60, 
+              "r\u00e9flexes": 35, 
+              "sauter": 40, 
+              "soigner": 57, 
+              "survie": 35
+            }
+          }, 
+          "curr_character": "Fran\u00e7ois De Paumerlot"
+        }, 
         "J\u00e9r\u00f4me Kacimi": {
           "characters": {
             "Steven Stone": {
@@ -212,7 +281,7 @@
               }, 
               "convaincre": 40, 
               "courir": 60, 
-              "descriptif": "", 
+              "descriptif": "bandito\ndorito", 
               "discr\u00e9tion": 55, 
               "d\u00e9placement_en_0_g": 40, 
               "garder_son_calme": 69, 
@@ -232,6 +301,42 @@
             }
           }, 
           "curr_character": "Steven Stone"
+        }, 
+        "Theo_Guerrois": {
+          "characters": {
+            "Alan Philler": {
+              "adaptation": 60, 
+              "astrophysique": 40, 
+              "bidouiller": 50, 
+              "biologie": 60, 
+              "bricoler": 50, 
+              "combat_a_distance": 60, 
+              "combat_au_corps_a_corps": 60, 
+              "comprendre_l'etrange": 30, 
+              "consommables": {
+                "hp": 10.0, 
+                "sanity": 13.0
+              }, 
+              "convaincre": 50, 
+              "courir": 70, 
+              "descriptif": "", 
+              "discr\u00e9tion": 60, 
+              "d\u00e9placement_en_0_g": 80, 
+              "garder_son_calme": 50, 
+              "g\u00e9ologie": 60, 
+              "inventaire": {}, 
+              "math\u00e9matiques": 40, 
+              "nager": 70, 
+              "observer": 50, 
+              "pilotage": 80, 
+              "programmation": 25, 
+              "r\u00e9flexes": 75, 
+              "sauter": 70, 
+              "soigner": 60, 
+              "survie": 40
+            }
+          }, 
+          "curr_character": "Alan Philler"
         }
       }
     }, 

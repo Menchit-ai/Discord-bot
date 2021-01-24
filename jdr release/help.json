@@ -6,6 +6,7 @@
         "add_carac" : "Permet d'ajouter des caractéristiques de base au système courant\nadd_carac (ac) : /ac [carac1] [carac2] [carac3] ....",
         "rm_carac" : "Permet de retirer des caractéristiques de base au système courant\nrm_carac (rc) : /rc [carac1] [carac2] [carac3] ....",
         "show_carac" : "Permet de lister les caractéristiques de base au système courant\nshow_carac (sc) : /sc",
+        "Descriptif":"Permet d'avoir un bloc note ou de noter une courte description de son personnage, de son environnement etc. On peut utiliser plusieurs options entre /desc et le texte que l'on veut noter : **a** pour ajouter son texte à la fin de celui déjà existant, **w** pour écraser le texte actuel par le nouveau, et **r** pour simplement afficher le texte enregistré. \n descriptif (desc) : /desc a [texte]",
         "system" : "Permet de créer, supprimer ou definir le système courant\nsystem (sys) : /sys [nom_système] [option: c|d]  (c: create, d:delete)",
         "info" : "Permet d'avoir des infos générales sur l'utilisateur et le serveur\ninfo (i) : /i",
         "roll" : "Permet de faire un jet sous un compétence du perso courant du joueur\nroll (r) : /r [caracteristique] [option: modificateur]",

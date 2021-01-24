@@ -79,7 +79,7 @@ async def jingle(id, voice_channel):
         elif id ==  540919479832674334 : vc.play(discord.FFmpegPCMAudio("./data_sound/bresil.mp3"))           # major
         elif id ==  208294174909399040 : vc.play(discord.FFmpegPCMAudio("./data_sound/swain.mp3"))            # pierre
         elif id ==  540934375810793473 : vc.play(discord.FFmpegPCMAudio("./data_sound/kiwi.mp3"))             # thibaud
-        elif id ==  290212793678954497 : vc.play(discord.FFmpegPCMAudio("./data_sound/pardon.mp3"))           # maillou
+        #elif id ==  290212793678954497 : vc.play(discord.FFmpegPCMAudio("./data_sound/pardon.mp3"))           # maillou
         elif id ==  126345523358597120 : vc.play(discord.FFmpegPCMAudio("./data_sound/baby-yoda.mp3"))        # romain
         elif id ==  250295841791672321 : vc.play(discord.FFmpegPCMAudio("./data_sound/yare-yare-daze.mp3"))   # nico
         elif id ==  234016737048264704 : vc.play(discord.FFmpegPCMAudio("./data_sound/ouii.mp3"))             # menchrof
@@ -448,8 +448,8 @@ async def show_character(ctx):
     try:
         for key,value in caracteristics["consommables"].items():
             conso = conso + key + " : " + str(value) +"\n"
+        embed.add_field(name= "Ressources", value = conso, inline=True)
     except : pass
-    embed.add_field(name= "Ressources", value = conso, inline=True)
 
     inventaire = config["sys"][system]["characters"][user]["characters"][character]["inventaire"]
     if len(inventaire.keys()) > 0:
@@ -457,7 +457,7 @@ async def show_character(ctx):
             if value is None : value = " - "
             else : value = " ".join(value.split("_"))
             items = items + key + " : " + str(value) +"\n"
-    embed.add_field(name= "Objets", value = items, inline=True)
+        embed.add_field(name= "Objets", value = items, inline=True)
 
 
 ####################################
